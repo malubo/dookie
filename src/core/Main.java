@@ -130,6 +130,7 @@ public class Main {
 				Display.setDisplayMode(new DisplayMode(800, 600));
 			}
 
+			// VSync.
 			Display.setVSyncEnabled(VSYNC);
 
 			Display.create();
@@ -188,35 +189,38 @@ public class Main {
 		
 		while (!Display.isCloseRequested()) {
 
-			// Calculate delta.
+			// calculate delta
 			int delta = getDelta();
 			
-			// Update the FPS counter.
+			// update the FPS counter
 			updateFPS();
 
-			// Clear the screen with black color.
+			// clear the screen with black color
 			glClear(GL11.GL_COLOR_BUFFER_BIT);
 
-			// Get input
+			// get input
 			keys.updateKeys();
 
-			// Update
+			// update
 			activeScreen.update(delta);
 
-			// Render
+			// render
 			activeScreen.render();
 
-			// DEBUGG SECTION
+			// debugg section
 			if (DEBUGG) {
-				// Draw FPS meter.
+				
+				// draw fps meter values
 				ui.Font.renderText(Integer.toString(fps), 1, 1);
+				
+				// draw delta values
 				ui.Font.renderText(Integer.toString(delta), 1, 10);
 			}
 
 			// yield
 			Thread.yield();
 
-			// update display && sync fps
+			// update display & sync fps
 			Display.update();
 			Display.sync(FPS_CAP);
 		}
@@ -308,7 +312,7 @@ public class Main {
 		Mouse.destroy();
 		Display.destroy();
 		Keyboard.destroy();
-		System.out.println("Clean up done!");
+		System.out.println("Clean up done!\nExiting ...");
 		System.exit(0);
 	}
 

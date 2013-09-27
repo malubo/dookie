@@ -4,8 +4,15 @@ import core.Main;
 
 public class OptionsScreen implements Screen {
 
+	/**
+	 * Screen ID.
+	 */
 	public static final int ID = 4;
 
+	/**
+	 * Refference to the main class.
+	 * Used for managing screens, input, timing.
+	 */
 	private Main main;
 
 	public OptionsScreen(Main main) {

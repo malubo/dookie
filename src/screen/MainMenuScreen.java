@@ -10,12 +10,19 @@ public class MainMenuScreen implements Screen {
 	 */
 	public static final int ID = 2;
 
+	/**
+	 * Refference to the main class.
+	 * Used for managing screens, input, timing.
+	 */
 	private Main main;
-
-	//private Image background;
 
 	private CenteredButtonMenu menu;
 
+	/**
+	 * Constructor.
+	 * 
+	 * @param main
+	 */
 	public MainMenuScreen(Main main) {
 		this.main = main;
 	}

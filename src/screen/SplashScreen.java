@@ -12,6 +12,10 @@ public class SplashScreen implements Screen {
 	 */
 	public static final int ID = 1;
 
+	/**
+	 * Refference to the main class.
+	 * Used for managing screens, input, timing.
+	 */
 	private Main main;
 
 	private Image background;
@@ -28,7 +32,7 @@ public class SplashScreen implements Screen {
 
 	@Override
 	public void init() {
-		background = Resource.getImage("res/image/bck1.png");
+		background = Resource.getImage("res/image/bck.png");
 		background.setAlpha(0f);
 	}
 
@@ -74,7 +78,7 @@ public class SplashScreen implements Screen {
 
 	@Override
 	public void destroy() {
-
+		background = null;
 	}
 
 	public int getID() {

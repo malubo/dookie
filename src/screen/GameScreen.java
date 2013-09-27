@@ -5,8 +5,15 @@ import entity.Player;
 
 public class GameScreen implements Screen {
 
+	/**
+	 * Screen ID.
+	 */
 	public static final int ID = 3;
 
+	/**
+	 * Refference to the main class.
+	 * Used for managing screens, input, timing.
+	 */
 	private Main main;
 
 	private Player player;
@@ -29,6 +36,8 @@ public class GameScreen implements Screen {
 	@Override
 	public void update(int delta) {
 
+		player.update(delta);
+		
 		// exit
 		if (main.getKeys().exit.wasDown()) {
 			main.enterScreen(MainMenuScreen.ID); 
@@ -37,6 +46,9 @@ public class GameScreen implements Screen {
 
 	@Override
 	public void render() {
+		
+		player.render();
+		
 		if (Main.DEBUGG) {
 			String sn = "game";
 			ui.Font.renderText(sn, Main.WIDTH / 2 - ui.Font.getMessageWidth(sn)
