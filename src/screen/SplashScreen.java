@@ -13,19 +13,26 @@ public class SplashScreen implements Screen {
 	public static final int ID = 1;
 
 	/**
-	 * Refference to the main class.
-	 * Used for managing screens, input, timing.
+	 * Refference to the main class. Used for managing screens, input, timing.
 	 */
-	private Main main;
+	Main main;
 
-	private Image background;
+	/**
+	 * Background image.
+	 */
+	Image background;
 
 	private float fadeAlpha = -1.5f;
 	private float fadeSpeed = 0f;
-	//private final float MAX_ALPHA = 1.6f;
+	// private final float MAX_ALPHA = 1.6f;
 	private final float MAX_ALPHA = 1f;
 
-	
+	/**
+	 * Constructor.
+	 * 
+	 * @param main
+	 *            Main class.
+	 */
 	public SplashScreen(Main main) {
 		this.main = main;
 	}
@@ -46,10 +53,10 @@ public class SplashScreen implements Screen {
 		if (fadeAlpha >= MAX_ALPHA) {
 			fadeSpeed = -fadeSpeed;
 		}
-		
-		if(fadeAlpha < 0f && fadeSpeed < 0f) {
+
+		if (fadeAlpha < 0f && fadeSpeed < 0f) {
 			// end of splash screen
-			main.enterScreen(MainMenuScreen.ID); 
+			main.enterScreen(MainMenuScreen.ID);
 		}
 
 		fadeAlpha += fadeSpeed * delta;
@@ -62,11 +69,14 @@ public class SplashScreen implements Screen {
 	@Override
 	public void render() {
 		background.draw();
-		
-		if(Main.DEBUGG) {
+
+		if (Main.DEBUGG) {
 			String sn = "splash";
-			ui.Font.renderText(sn, Main.WIDTH / 2 - ui.Font.getMessageWidth(sn) / 2, 2);
-			ui.Font.renderText(Main.VERSION, Main.WIDTH / 2 - ui.Font.getMessageWidth(Main.VERSION) / 2, Main.HEIGHT - ui.Font.HEIGHT);
+			ui.Font.renderText(sn, Main.WIDTH / 2 - ui.Font.getMessageWidth(sn)
+					/ 2, 2);
+			ui.Font.renderText(Main.VERSION,
+					Main.WIDTH / 2 - ui.Font.getMessageWidth(Main.VERSION) / 2,
+					Main.HEIGHT - ui.Font.HEIGHT);
 		}
 
 	}

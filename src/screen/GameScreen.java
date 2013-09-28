@@ -1,5 +1,6 @@
 package screen;
 
+import level.Level;
 import core.*;
 import entity.Player;
 
@@ -11,14 +12,30 @@ public class GameScreen implements Screen {
 	public static final int ID = 3;
 
 	/**
-	 * Refference to the main class.
-	 * Used for managing screens, input, timing.
+	 * Refference to the main class. Used for managing screens, input, timing.
 	 */
-	private Main main;
+	Main main;
 
-	private Player player;
-	private Camera camera;
+	/**
+	 * Player.
+	 */
+	Player player;
 	
+	/**
+	 * Camera, watching from above.
+	 */
+	Camera camera;
+	
+	/**
+	 * Level.
+	 */
+	Level level;
+
+	/**
+	 * 
+	 * 
+	 * @param main Main class.
+	 */
 	public GameScreen(Main main) {
 		this.main = main;
 	}
@@ -37,18 +54,18 @@ public class GameScreen implements Screen {
 	public void update(int delta) {
 
 		player.update(delta);
-		
+
 		// exit
 		if (main.getKeys().exit.wasDown()) {
-			main.enterScreen(MainMenuScreen.ID); 
+			main.enterScreen(MainMenuScreen.ID);
 		}
 	}
 
 	@Override
 	public void render() {
-		
+
 		player.render();
-		
+
 		if (Main.DEBUGG) {
 			String sn = "game";
 			ui.Font.renderText(sn, Main.WIDTH / 2 - ui.Font.getMessageWidth(sn)

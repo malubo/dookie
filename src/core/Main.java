@@ -44,12 +44,12 @@ public class Main {
 	/**
 	 * Fullscreen mode.
 	 */
-	public static final boolean FULLSCREEN = false;
+	public static final boolean FULLSCREEN = true;
 
 	/**
 	 * Vertical sync.
 	 */
-	public static final boolean VSYNC = false;
+	public static final boolean VSYNC = true;
 
 	/**
 	 * Frames per second cap.
@@ -186,6 +186,7 @@ public class Main {
 		
 		// set intro screen as active screen
 		enterScreen(SplashScreen.ID); 
+		enterScreen(GameScreen.ID);
 		
 		while (!Display.isCloseRequested()) {
 
@@ -224,6 +225,7 @@ public class Main {
 			Display.update();
 			Display.sync(FPS_CAP);
 		}
+		exit();
 	}
 
 	/**
