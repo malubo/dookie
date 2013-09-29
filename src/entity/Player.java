@@ -75,7 +75,7 @@ public class Player extends Entity {
 		walkingSouth = new Animation();
 		walkingWest = new Animation();
 
-		int off = 0;
+		int off = 5;
 		
 		standingNorth.addFrame(player.getSprite(7, off), 100);
 		standingEast.addFrame(player.getSprite(4, off), 100);

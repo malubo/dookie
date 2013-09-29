@@ -20,12 +20,12 @@ public class GameScreen implements Screen {
 	 * Player.
 	 */
 	Player player;
-	
+
 	/**
 	 * Camera, watching from above.
 	 */
 	Camera camera;
-	
+
 	/**
 	 * Level.
 	 */
@@ -34,7 +34,8 @@ public class GameScreen implements Screen {
 	/**
 	 * 
 	 * 
-	 * @param main Main class.
+	 * @param main
+	 *            Main class.
 	 */
 	public GameScreen(Main main) {
 		this.main = main;
@@ -42,12 +43,14 @@ public class GameScreen implements Screen {
 
 	@Override
 	public void init() {
-		player = new Player(0, 0, 32, 32, main.getKeys());
+		player = new Player(32, 32, 32, 32, main.getKeys());
+		level = new Level("level_one");
+		camera = new Camera(0, 0, level.mapWidth, level.mapHeight);
 	}
 
 	@Override
 	public void enter() {
-
+		camera.centerOn(player.getCenter());
 	}
 
 	@Override
@@ -63,8 +66,13 @@ public class GameScreen implements Screen {
 
 	@Override
 	public void render() {
-
+		camera.centerOn(player.getX() + player.getWidth() / 2, player.getY() + player.getHeight() / 2);
+		
+		level.renderMap(camera.x, camera.y);
+		
+		camera.translate();
 		player.render();
+		camera.untranslate();
 
 		if (Main.DEBUGG) {
 			String sn = "game";

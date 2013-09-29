@@ -1,7 +1,9 @@
 package level;
 
+import org.newdawn.slick.Image;
 import org.newdawn.slick.tiled.TiledMap;
 
+import core.Main;
 import util.Resource;
 
 public class Level {
@@ -28,4 +30,51 @@ public class Level {
 		mapWidth = numTilesX * tileWidth;
 		mapHeight = numTilesY * tileHeight;
 	}
+	
+	public void renderMap(float x, float y) {
+		if (x < 0) {
+			x = 0;
+		}
+
+		if (y < 0) {
+			y = 0;
+		}
+
+		// horizontal coordinates of the least and the most visible tiles
+		int minTileX = (int) (x - (x % tileWidth)) / tileWidth;
+		int maxTileX = minTileX + Main.WIDTH / tileWidth + 2;
+
+		// vertical coordinates of the least and the most visible tiles
+		int minTileY = (int) (y - (y % tileHeight)) / tileHeight;
+		int maxTileY = minTileY + Main.HEIGHT / tileHeight + 2;
+
+		if (maxTileX > numTilesX) {
+			maxTileX = numTilesX;
+		}
+
+		if (maxTileY > numTilesY) {
+			maxTileY = numTilesY;
+		}
+
+		//tilesDisplaying = 0;
+
+        renderLayer(0, x, y, minTileX, maxTileX, minTileY, maxTileY);
+		//renderLayer(BLOCKED_LAYER_INDEX, x, y, minTileX, maxTileX, minTileY, maxTileY);
+	}
+	
+	public void renderLayer(int layerIndex, float x, float y, int minX,
+			int maxX, int minY, int maxY) {
+		for (int xAxis = minX; xAxis < maxX; xAxis++) {
+			for (int yAxis = minY; yAxis < maxY; yAxis++) {
+				Image tileImg = map.getTileImage(xAxis, yAxis, layerIndex);
+				if (tileImg != null) {
+					tileImg.clampTexture();
+					tileImg.draw(-x + xAxis * tileWidth, -y + yAxis
+							* tileHeight);
+					//tilesDisplaying++;
+				}
+			}
+		}
+	}
+	
 }
