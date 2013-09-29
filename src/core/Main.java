@@ -54,7 +54,7 @@ public class Main {
 	/**
 	 * Frames per second cap.
 	 */
-	public static final int FPS_CAP = 120;
+	public static final int FPS_CAP = 400;
 
 	/**
 	 * Debugg mode.

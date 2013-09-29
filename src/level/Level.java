@@ -1,5 +1,7 @@
 package level;
 
+import java.util.ArrayList;
+
 import org.newdawn.slick.Image;
 import org.newdawn.slick.tiled.TiledMap;
 
@@ -17,6 +19,9 @@ public class Level {
 
 	public int numTilesX; // map width in tiles
 	public int numTilesY; // map height in tiles
+	
+	ArrayList<Tile> blocked;
+	ArrayList<Tile> boxes;
 	
 	public Level(String name) {
 		map = Resource.getTiledMap("res/level/" + name + ".tmx");

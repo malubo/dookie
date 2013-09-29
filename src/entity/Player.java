@@ -36,7 +36,7 @@ public class Player extends Entity {
 	Animation walkingSouth;
 	Animation walkingWest;
 
-	private static final float WALKING_SPEED = 0.0892f;
+	private static final float WALKING_SPEED = 0.0992f;
 
 	/**
 	 * Keys associated with the player.
@@ -75,7 +75,7 @@ public class Player extends Entity {
 		walkingSouth = new Animation();
 		walkingWest = new Animation();
 
-		int off = 5;
+		int off = 6;
 		
 		standingNorth.addFrame(player.getSprite(7, off), 100);
 		standingEast.addFrame(player.getSprite(4, off), 100);
