@@ -7,7 +7,7 @@ import util.Resource;
 import input.Keys;
 
 public class Player extends Entity {
-	
+
 	private State state;
 
 	public enum State {
@@ -75,8 +75,8 @@ public class Player extends Entity {
 		walkingSouth = new Animation();
 		walkingWest = new Animation();
 
-		int off = 6;
-		
+		int off = 5;
+
 		standingNorth.addFrame(player.getSprite(7, off), 100);
 		standingEast.addFrame(player.getSprite(4, off), 100);
 		standingSouth.addFrame(player.getSprite(1, off), 100);
@@ -113,40 +113,44 @@ public class Player extends Entity {
 	public void update(int delta) {
 		setState(State.standing);
 
-		if (keys.up.isDown()) {
+		if (keys.up.isDown() && !keys.down.isDown()) {
 			this.move(0, -WALKING_SPEED * delta);
 			setDirection(Direction.north);
 			setState(State.walking);
 		}
 
-		if (keys.right.isDown()) {
+		if (keys.right.isDown() && !keys.left.isDown()) {
 			this.move(WALKING_SPEED * delta, 0);
 			setDirection(Direction.east);
 			setState(State.walking);
 		}
 
-		if (keys.down.isDown()) {
+		if (keys.down.isDown() && !keys.up.isDown()) {
 			this.move(0, WALKING_SPEED * delta);
 			setDirection(Direction.south);
 			setState(State.walking);
 		}
 
-		if (keys.left.isDown()) {
+		if (keys.left.isDown() && !keys.right.isDown()) {
 			this.move(-WALKING_SPEED * delta, 0);
 			setDirection(Direction.west);
 			setState(State.walking);
 		}
 
+		updateAnimations(delta);
+		
+	}
+
+	private void updateAnimations(long delta) {
 		standingNorth.update(delta);
 		standingEast.update(delta);
 		standingSouth.update(delta);
 		standingWest.update(delta);
-		
+
 		walkingNorth.update(delta);
 		walkingEast.update(delta);
 		walkingSouth.update(delta);
 		walkingWest.update(delta);
-
 	}
 
 	@Override
