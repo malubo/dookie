@@ -22,6 +22,9 @@ public class Level {
 	
 	ArrayList<Tile> blocked;
 	ArrayList<Tile> boxes;
+	ArrayList<Tile> items;
+	
+	public int tilesDisplaying = 0;
 	
 	public Level(String name) {
 		map = Resource.getTiledMap("res/level/" + name + ".tmx");
@@ -34,6 +37,12 @@ public class Level {
 
 		mapWidth = numTilesX * tileWidth;
 		mapHeight = numTilesY * tileHeight;
+		
+		// identify player position
+		// fill blocked array
+		// fill box array
+		// fill items array
+		
 	}
 	
 	public void renderMap(float x, float y) {
@@ -61,7 +70,7 @@ public class Level {
 			maxTileY = numTilesY;
 		}
 
-		//tilesDisplaying = 0;
+		tilesDisplaying = 0;
 
         renderLayer(0, x, y, minTileX, maxTileX, minTileY, maxTileY);
 		//renderLayer(BLOCKED_LAYER_INDEX, x, y, minTileX, maxTileX, minTileY, maxTileY);
@@ -76,7 +85,7 @@ public class Level {
 					tileImg.clampTexture();
 					tileImg.draw(-x + xAxis * tileWidth, -y + yAxis
 							* tileHeight);
-					//tilesDisplaying++;
+					tilesDisplaying++;
 				}
 			}
 		}

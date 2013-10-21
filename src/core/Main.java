@@ -197,7 +197,7 @@ public class Main {
 			updateFPS();
 
 			// clear the screen with black color
-			glClear(GL11.GL_COLOR_BUFFER_BIT);
+			glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
 
 			// get input
 			keys.updateKeys();
@@ -212,10 +212,7 @@ public class Main {
 			if (DEBUGG) {
 				
 				// draw fps meter values
-				ui.Font.renderText(Integer.toString(fps), 1, 1);
-				
-				// draw delta values
-				ui.Font.renderText(Integer.toString(delta), 1, 10);
+				ui.Font.renderText(Integer.toString(fps) + " fps", 1, 1);
 			}
 
 			// yield

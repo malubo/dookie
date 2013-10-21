@@ -1,5 +1,7 @@
 package entity;
 
+import level.Level;
+
 import org.newdawn.slick.Animation;
 import org.newdawn.slick.SpriteSheet;
 
@@ -37,6 +39,10 @@ public class Player extends Entity {
 	Animation walkingWest;
 
 	private static final float WALKING_SPEED = 0.0992f;
+	
+	private Level level;
+	private boolean moving = false;
+	
 
 	/**
 	 * Keys associated with the player.
@@ -52,9 +58,10 @@ public class Player extends Entity {
 	 * @param height
 	 * @param keys
 	 */
-	public Player(float x, float y, float width, float height, Keys keys) {
+	public Player(float x, float y, float width, float height, Keys keys, Level level) {
 		super(x, y, width, height);
 		this.keys = keys;
+		this.level = level;
 		init();
 	}
 
@@ -75,7 +82,7 @@ public class Player extends Entity {
 		walkingSouth = new Animation();
 		walkingWest = new Animation();
 
-		int off = 5;
+		int off = 6;
 
 		standingNorth.addFrame(player.getSprite(7, off), 100);
 		standingEast.addFrame(player.getSprite(4, off), 100);
@@ -137,8 +144,7 @@ public class Player extends Entity {
 			setState(State.walking);
 		}
 
-		updateAnimations(delta);
-		
+		updateAnimations(delta);	
 	}
 
 	private void updateAnimations(long delta) {
