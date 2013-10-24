@@ -46,7 +46,7 @@ public class GameScreen implements Screen {
 	@Override
 	public void init() {	
 		level = new Level("level_two");
-		player = new Player(32, 32, 32, 32, main.getKeys(), level);
+		player = new Player(32, 32, 32, 32, main.getKeys(), level, Player.PLAYER_TYPE_VIKING);
 		camera = new Camera(0, 0, level.mapWidth, level.mapHeight);
 	}
 
