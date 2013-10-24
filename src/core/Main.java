@@ -18,6 +18,7 @@ import screen.MainMenuScreen;
 import screen.OptionsScreen;
 import screen.Screen;
 import screen.SplashScreen;
+import util.Debugg;
 
 public class Main {
 
@@ -130,7 +131,7 @@ public class Main {
 				Display.setDisplayMode(new DisplayMode(800, 600));
 			}
 
-			// VSync.
+			// Vertical Synchronisation
 			Display.setVSyncEnabled(VSYNC);
 
 			Display.create();
@@ -199,6 +200,9 @@ public class Main {
 			// clear the screen with black color
 			glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
 
+			// enable 2D textures, disabling them for the debugg mode grid painting
+			glEnable(GL11.GL_TEXTURE_2D);
+			
 			// get input
 			keys.updateKeys();
 
@@ -210,9 +214,8 @@ public class Main {
 
 			// debugg section
 			if (DEBUGG) {
-				
-				// draw fps meter values
-				ui.Font.renderText(Integer.toString(fps) + " fps", 1, 1);
+				Debugg.printFPS(fps);
+				Debugg.printVersionNumber();
 			}
 
 			// yield
