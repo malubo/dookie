@@ -3,6 +3,7 @@ package level;
 import java.util.ArrayList;
 
 import org.newdawn.slick.Image;
+import org.newdawn.slick.SlickException;
 import org.newdawn.slick.tiled.TiledMap;
 
 import core.Main;
@@ -19,15 +20,16 @@ public class Level {
 
 	public int numTilesX; // map width in tiles
 	public int numTilesY; // map height in tiles
-	
-	ArrayList<Tile> blocked;
-	ArrayList<Tile> boxes;
-	ArrayList<Tile> items;
-	
+
+	ArrayList<Tile> blocked = new ArrayList<Tile>();
+	ArrayList<Tile> boxes = new ArrayList<Tile>();
+	ArrayList<Tile> items = new ArrayList<Tile>();
+
 	public int tilesDisplaying = 0;
-	
+
 	public Level(String name) {
-		map = Resource.getTiledMap("res/level/" + name + ".tmx");
+
+		map = Resource.getTiledMap("res/world/" + name + ".tmx");
 
 		tileWidth = map.getTileWidth();
 		tileHeight = map.getTileHeight();
@@ -37,14 +39,27 @@ public class Level {
 
 		mapWidth = numTilesX * tileWidth;
 		mapHeight = numTilesY * tileHeight;
-		
+
 		// identify player position
+
 		// fill blocked array
+		for(int x = 0; x < numTilesX; x++){
+			for(int y = 0; y < numTilesY; y++) {
+				if(map.getTileImage(x, y, 0) != null) {
+					//System.out.println(x + ":" + y);
+					blocked.add(new Tile(x * 32, y * 32, 32, 32));
+					System.out.println("added " + x * 32 + ":" + y * 32);
+				}
+			}
+		}
+		
+		
+		
 		// fill box array
 		// fill items array
-		
+
 	}
-	
+
 	public void renderMap(float x, float y) {
 		if (x < 0) {
 			x = 0;
@@ -72,10 +87,10 @@ public class Level {
 
 		tilesDisplaying = 0;
 
-        renderLayer(0, x, y, minTileX, maxTileX, minTileY, maxTileY);
-		//renderLayer(BLOCKED_LAYER_INDEX, x, y, minTileX, maxTileX, minTileY, maxTileY);
+		renderLayer(0, x, y, minTileX, maxTileX, minTileY, maxTileY);
+		
 	}
-	
+
 	public void renderLayer(int layerIndex, float x, float y, int minX,
 			int maxX, int minY, int maxY) {
 		for (int xAxis = minX; xAxis < maxX; xAxis++) {
@@ -90,5 +105,16 @@ public class Level {
 			}
 		}
 	}
-	
+
+	public boolean isBlocked(int x, int y) {
+		System.out.println("checking " + x + ":" + y);
+		
+		for(Tile t : blocked) {
+			if((int)t.getX() == x && (int)t.getY() == y) {
+				return true;
+			}
+		}
+		
+		return false;
+	}
 }

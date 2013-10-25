@@ -100,7 +100,7 @@ public class Player extends Entity {
 	 * Time in miliseconds between any action is available. Triggered when
 	 * performing any action.
 	 */
-	private static final long ACTION_COOLDOWN = 165;
+	private static final long ACTION_COOLDOWN = 295;
 
 	/**
 	 * Keys associated with the player.
@@ -130,7 +130,7 @@ public class Player extends Entity {
 		state = State.standing;
 		direction = Direction.south;
 
-		SpriteSheet player = Resource.getSpriteSheet("/res/image/player.png",
+		SpriteSheet player = Resource.getSpriteSheet("res/image/player.png",
 				32, 32);
 
 		// STANDING NORTH
@@ -238,7 +238,16 @@ public class Player extends Entity {
 
 			this.destination = new Point(targetX, targetY);
 		}
-
+		
+		/*
+		 * Cancel destination if path is blocked.
+		 */
+		if(destination != null && level.isBlocked((int)destination.getX(), (int)destination.getY())) {
+			destination = null;
+			moving = false;
+			state = State.standing;
+		}
+		
 		/*
 		 * Player is moving. Destination point is set. Move towards the
 		 * destination point.

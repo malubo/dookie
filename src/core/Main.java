@@ -55,7 +55,7 @@ public class Main {
 	/**
 	 * Frames per second cap.
 	 */
-	public static final int FPS_CAP = 400;
+	public static final int FPS_CAP = 200;
 
 	/**
 	 * Debugg mode.
@@ -184,25 +184,29 @@ public class Main {
 	 * Game cycle. Update + Render the current screen.
 	 */
 	public void loop() {
-		
+
 		// set intro screen as active screen
-		enterScreen(SplashScreen.ID); 
-		enterScreen(GameScreen.ID);
-		
+		enterScreen(SplashScreen.ID);
+
+		if (DEBUGG) {
+			enterScreen(GameScreen.ID);
+		}
+
 		while (!Display.isCloseRequested()) {
 
 			// calculate delta
 			int delta = getDelta();
-			
+
 			// update the FPS counter
 			updateFPS();
 
 			// clear the screen with black color
 			glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
 
-			// enable 2D textures, disabling them for the debugg mode grid painting
+			// enable 2D textures, disabling them for the debugg mode grid
+			// painting
 			glEnable(GL11.GL_TEXTURE_2D);
-			
+
 			// get input
 			keys.updateKeys();
 
