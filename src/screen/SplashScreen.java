@@ -22,7 +22,7 @@ public class SplashScreen implements Screen {
 	 */
 	Image background;
 
-	private float fadeAlpha = -1.5f;
+	private float fadeAlpha = -0.7f;
 	private float fadeSpeed = 0f;
 	// private final float MAX_ALPHA = 1.6f;
 	private final float MAX_ALPHA = 1f;

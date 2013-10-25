@@ -25,8 +25,8 @@ public class CenteredButtonMenu {
 		lastMenuMove = Main.getTime();
 		selectedMenuItemIndex = 0;
 
-		width = 80;
-		height = 25;
+		width = 65;
+		height = 17;
 		
 		x = (Main.WIDTH - width) / 2;
 		y = (Main.HEIGHT - height * menuItems.length) / 2;

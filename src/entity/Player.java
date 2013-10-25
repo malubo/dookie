@@ -122,7 +122,7 @@ public class Player extends Entity {
 		this.keys = keys;
 		this.level = level;
 		this.playerType = playerType;
-		lastAction = Main.getTime();
+		activateCooldown();
 		init();
 	}
 
@@ -198,15 +198,10 @@ public class Player extends Entity {
 	@Override
 	public void update(int delta) {
 
-		// get current game time
-		long time = Main.getTime();
+		handleInput(delta); // get keyboard input
 
-		// get keyboard input
-		handleInput(delta, time);
-
-		// reset state
 		if (!moving) {
-			setState(State.standing);
+			setState(State.standing); // reset state
 		}
 
 		/*
@@ -235,19 +230,20 @@ public class Player extends Entity {
 				targetY = (int) getY();
 				break;
 			}
-
 			this.destination = new Point(targetX, targetY);
 		}
-		
+
 		/*
 		 * Cancel destination if path is blocked.
 		 */
-		if(destination != null && level.isBlocked((int)destination.getX(), (int)destination.getY())) {
+		if (destination != null
+				&& level.isBlocked((int) destination.getX(),
+						(int) destination.getY())) {
 			destination = null;
 			moving = false;
 			state = State.standing;
 		}
-		
+
 		/*
 		 * Player is moving. Destination point is set. Move towards the
 		 * destination point.
@@ -301,59 +297,83 @@ public class Player extends Entity {
 		updateAnimations(delta);
 	}
 
-	private void handleInput(long delta, long time) {
-
+	private void handleInput(long delta) {
+		
 		if (moving) {
 			return; // bugger off if moving in progress
 		}
 
-		if (lastAction + ACTION_COOLDOWN > time) {
+		if (isCooldownReady()) {
 			return; // bugger off if action cooldown hasn't finished
 		}
 
 		// UP PRESSED
 		if (keys.up.isDown() && !keys.down.isDown()) {
-			if (direction == Direction.north) {
-				setState(State.walking);
-				moving = true;
-			} else {
+			if(direction == Direction.north) {
+				if(state == State.standing || state == State.walking) {
+					setState(State.walking);
+					moving = true;
+					activateCooldown();
+				}
+			}
+			
+			if (direction != Direction.north && state == State.standing) {
 				setDirection(Direction.north);
 			}
-			lastAction = time;
 		}
 
 		// RIGHT PRESSED
 		if (keys.right.isDown() && !keys.left.isDown()) {
 			if (direction == Direction.east) {
-				setState(State.walking);
-				moving = true;
-			} else {
+				if(state == State.standing || state == State.walking) {
+					setState(State.walking);
+					moving = true;
+					activateCooldown();
+				}
+			}				
+			
+			if (direction != Direction.east && state == State.standing) {
 				setDirection(Direction.east);
 			}
-			lastAction = time;
 		}
 
 		// DOWN PRESSED
 		if (keys.down.isDown() && !keys.up.isDown()) {
 			if (direction == Direction.south) {
-				setState(State.walking);
-				moving = true;
-			} else {
+				if(state == State.standing || state == State.walking) {
+					setState(State.walking);
+					moving = true;
+					activateCooldown();
+				}
+			}				
+			
+			if (direction != Direction.south && state == State.standing) {
 				setDirection(Direction.south);
 			}
-			lastAction = time;
 		}
 
 		// LEFT PRESSED
 		if (keys.left.isDown() && !keys.right.isDown()) {
 			if (direction == Direction.west) {
-				setState(State.walking);
-				moving = true;
-			} else {
+				if(state == State.standing || state == State.walking) {
+					setState(State.walking);
+					moving = true;
+					activateCooldown();
+				}
+			}				
+			
+			if (direction != Direction.west && state == State.standing) {
 				setDirection(Direction.west);
 			}
-			lastAction = time;
 		}
+	}
+
+	private boolean isCooldownReady() {
+		return (lastAction + ACTION_COOLDOWN > Main.getTime());
+	}
+
+	private void activateCooldown() {
+		lastAction = Main.getTime();
 	}
 
 	/**
@@ -432,19 +452,6 @@ public class Player extends Entity {
 				getX() + WIDTH / 2 - Font.getMessageWidth(simpleCoords) / 2,
 				getY() + 40);
 
-		/*
-		 * 
-		 * // DESTINATION INFO if (destination != null) { String targetCoords =
-		 * Integer .toString((int) destination.getX() / 32) + "-" +
-		 * Integer.toString((int) destination.getY() / 32);
-		 * 
-		 * Font.renderText( targetCoords, getX() + WIDTH / 2 -
-		 * Font.getMessageWidth(targetCoords) / 2, getY() + 58);
-		 * 
-		 * } else { String targetCoords = "no destination"; Font.renderText(
-		 * targetCoords, getX() + WIDTH / 2 - Font.getMessageWidth(targetCoords)
-		 * / 2, getY() + 58); }
-		 */
 		// PLAYER STATE
 		String stateString = "";
 		switch (state) {

@@ -4,12 +4,20 @@ import java.util.ArrayList;
 
 import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
+import org.newdawn.slick.geom.Point;
+import org.newdawn.slick.geom.Rectangle;
 import org.newdawn.slick.tiled.TiledMap;
 
 import core.Main;
+import entity.Player;
 import util.Resource;
 
 public class Level {
+	
+	private static final int BLOCKED_LAYER_INDEX = 0;
+	private static final int ITEM_LAYER_INDEX = 1;
+	private static final int ENTITY_LAYER_INDEX = 2;
+	
 	public TiledMap map;
 
 	public int tileWidth; // tile width in pixels
@@ -21,10 +29,16 @@ public class Level {
 	public int numTilesX; // map width in tiles
 	public int numTilesY; // map height in tiles
 
+	public Player player;
 	ArrayList<Tile> blocked = new ArrayList<Tile>();
 	ArrayList<Tile> boxes = new ArrayList<Tile>();
 	ArrayList<Tile> items = new ArrayList<Tile>();
 
+	private Rectangle area;
+	
+	/**
+	 * Tiles rendered counter.
+	 */
 	public int tilesDisplaying = 0;
 
 	public Level(String name) {
@@ -46,14 +60,10 @@ public class Level {
 		for(int x = 0; x < numTilesX; x++){
 			for(int y = 0; y < numTilesY; y++) {
 				if(map.getTileImage(x, y, 0) != null) {
-					//System.out.println(x + ":" + y);
-					blocked.add(new Tile(x * 32, y * 32, 32, 32));
-					System.out.println("added " + x * 32 + ":" + y * 32);
+					blocked.add(new Tile(x * tileWidth, y * tileHeight, tileWidth, tileHeight));
 				}
 			}
 		}
-		
-		
 		
 		// fill box array
 		// fill items array
@@ -61,6 +71,9 @@ public class Level {
 	}
 
 	public void renderMap(float x, float y) {
+		
+		setDisplayedArea(new Rectangle(x, y, Main.WIDTH, Main.HEIGHT));
+		
 		if (x < 0) {
 			x = 0;
 		}
@@ -87,8 +100,7 @@ public class Level {
 
 		tilesDisplaying = 0;
 
-		renderLayer(0, x, y, minTileX, maxTileX, minTileY, maxTileY);
-		
+		renderLayer(0, x, y, minTileX, maxTileX, minTileY, maxTileY);	
 	}
 
 	public void renderLayer(int layerIndex, float x, float y, int minX,
@@ -107,14 +119,30 @@ public class Level {
 	}
 
 	public boolean isBlocked(int x, int y) {
-		System.out.println("checking " + x + ":" + y);
-		
 		for(Tile t : blocked) {
 			if((int)t.getX() == x && (int)t.getY() == y) {
 				return true;
 			}
 		}
-		
 		return false;
 	}
+	
+	/**
+	 * 
+	 * @param destination Point at which the player is trying to move.
+	 * @return True if the point is occupied by a movable. False otherwise.
+	 */
+	public boolean isPushingMovable(Point destination) {
+		return false;
+	}
+	
+	
+	public void setDisplayedArea(Rectangle area) {
+		this.area = area;
+	}
+	
+	public Rectangle getDisplayedArea() {
+		return area;
+	}
+	
 }

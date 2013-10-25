@@ -45,19 +45,20 @@ public class GameScreen implements Screen {
 	@Override
 	public void init() {	
 		level = new Level("level1");
-		player = new Player(32, 32, 32, 32, main.getKeys(), level, Player.PLAYER_TYPE_GENIE);
+		level.player = new Player(32, 32, 32, 32, main.getKeys(), level, Player.PLAYER_TYPE_GENIE);
 		camera = new Camera(0, 0, level.mapWidth, level.mapHeight);
 	}
 
 	@Override
 	public void enter() {
-		camera.centerOn(player.getCenter());
+		//camera.centerOn(player.getCenter());
+		camera.centerOn(level.player.getCenter());
 	}
 
 	@Override
 	public void update(int delta) {
 
-		player.update(delta);
+		level.player.update(delta);
 
 		// exit
 		if (main.getKeys().exit.wasDown()) {
@@ -67,12 +68,11 @@ public class GameScreen implements Screen {
 
 	@Override
 	public void render() {
-		camera.centerOn(player.getX() + player.getWidth() / 2, player.getY() + player.getHeight() / 2);
-		
+		camera.centerOn(level.player.getX() + level.player.getWidth() / 2, level.player.getY() + level.player.getHeight() / 2);
 		level.renderMap(camera.x, camera.y);
 		
 		camera.translate();
-		player.render();
+		level.player.render();
 		camera.untranslate();
 
 		if (Main.DEBUGG) {
