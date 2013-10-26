@@ -1,5 +1,7 @@
 package level;
 
+import input.Keys;
+
 import java.util.ArrayList;
 
 import org.newdawn.slick.Image;
@@ -8,16 +10,19 @@ import org.newdawn.slick.geom.Point;
 import org.newdawn.slick.geom.Rectangle;
 import org.newdawn.slick.tiled.TiledMap;
 
+import core.Camera;
 import core.Main;
 import entity.Player;
+import util.Debugg;
 import util.Resource;
 
 public class Level {
-	
+
 	private static final int BLOCKED_LAYER_INDEX = 0;
-	private static final int ITEM_LAYER_INDEX = 1;
-	private static final int ENTITY_LAYER_INDEX = 2;
-	
+	private static final int MOVABLE_LAYER_INDEX = 1;
+	private static final int SLIDING_LAYER_INDEX = 2;
+	private static final int ENTITY_LAYER_INDEX = 10;
+
 	public TiledMap map;
 
 	public int tileWidth; // tile width in pixels
@@ -29,21 +34,28 @@ public class Level {
 	public int numTilesX; // map width in tiles
 	public int numTilesY; // map height in tiles
 
-	public Player player;
-	ArrayList<Tile> blocked = new ArrayList<Tile>();
-	ArrayList<Tile> boxes = new ArrayList<Tile>();
-	ArrayList<Tile> items = new ArrayList<Tile>();
+	private Player player;
+	private Keys keys;
+	private Camera camera;
 
+	ArrayList<Tile> blocked = new ArrayList<Tile>();
+	ArrayList<Tile> movable = new ArrayList<Tile>();
+	ArrayList<Tile> sliding = new ArrayList<Tile>();
+
+	/**
+	 * Displayed area of the map. In pixels.
+	 */
 	private Rectangle area;
-	
+
 	/**
 	 * Tiles rendered counter.
 	 */
 	public int tilesDisplaying = 0;
 
-	public Level(String name) {
+	public Level(String name, Keys keys) {
 
 		map = Resource.getTiledMap("res/world/" + name + ".tmx");
+		this.keys = keys;
 
 		tileWidth = map.getTileWidth();
 		tileHeight = map.getTileHeight();
@@ -54,95 +66,160 @@ public class Level {
 		mapWidth = numTilesX * tileWidth;
 		mapHeight = numTilesY * tileHeight;
 
-		// identify player position
+		camera = new Camera(0, 0, mapWidth, mapHeight);
 
 		// fill blocked array
-		for(int x = 0; x < numTilesX; x++){
-			for(int y = 0; y < numTilesY; y++) {
-				if(map.getTileImage(x, y, 0) != null) {
-					blocked.add(new Tile(x * tileWidth, y * tileHeight, tileWidth, tileHeight));
+		for (int x = 0; x < numTilesX; x++) {
+			for (int y = 0; y < numTilesY; y++) {
+				Image tileImage = map.getTileImage(x, y, BLOCKED_LAYER_INDEX);
+				if (tileImage != null) {
+					blocked.add(new Tile(x * tileWidth, y * tileHeight,
+							tileWidth, tileHeight, tileImage));
 				}
 			}
 		}
-		
-		// fill box array
-		// fill items array
 
-	}
-
-	public void renderMap(float x, float y) {
-		
-		setDisplayedArea(new Rectangle(x, y, Main.WIDTH, Main.HEIGHT));
-		
-		if (x < 0) {
-			x = 0;
-		}
-
-		if (y < 0) {
-			y = 0;
-		}
-
-		// horizontal coordinates of the least and the most visible tiles
-		int minTileX = (int) (x - (x % tileWidth)) / tileWidth;
-		int maxTileX = minTileX + Main.WIDTH / tileWidth + 2;
-
-		// vertical coordinates of the least and the most visible tiles
-		int minTileY = (int) (y - (y % tileHeight)) / tileHeight;
-		int maxTileY = minTileY + Main.HEIGHT / tileHeight + 2;
-
-		if (maxTileX > numTilesX) {
-			maxTileX = numTilesX;
-		}
-
-		if (maxTileY > numTilesY) {
-			maxTileY = numTilesY;
-		}
-
-		tilesDisplaying = 0;
-
-		renderLayer(0, x, y, minTileX, maxTileX, minTileY, maxTileY);	
-	}
-
-	public void renderLayer(int layerIndex, float x, float y, int minX,
-			int maxX, int minY, int maxY) {
-		for (int xAxis = minX; xAxis < maxX; xAxis++) {
-			for (int yAxis = minY; yAxis < maxY; yAxis++) {
-				Image tileImg = map.getTileImage(xAxis, yAxis, layerIndex);
-				if (tileImg != null) {
-					tileImg.clampTexture();
-					tileImg.draw(-x + xAxis * tileWidth, -y + yAxis
-							* tileHeight);
-					tilesDisplaying++;
+		// fill movable array
+		for (int x = 0; x < numTilesX; x++) {
+			for (int y = 0; y < numTilesY; y++) {
+				Image tileImage = map.getTileImage(x, y, MOVABLE_LAYER_INDEX);
+				if (tileImage != null) {
+					movable.add(new Tile(x * tileWidth, y * tileHeight,
+							tileWidth, tileHeight, tileImage));
 				}
 			}
 		}
+
+		// fill sliding array
+		for (int x = 0; x < numTilesX; x++) {
+			for (int y = 0; y < numTilesY; y++) {
+				Image tileImage = map.getTileImage(x, y, SLIDING_LAYER_INDEX);
+				if (tileImage != null) {
+					sliding.add(new Tile(x * tileWidth, y * tileHeight,
+							tileWidth, tileHeight, tileImage));
+				}
+			}
+		}
+
+		// identify the player position
+		player = new Player(32, 32, 32, 32, keys, this,
+				Player.PLAYER_TYPE_GENIE);
+
 	}
 
+	/**
+	 * Checks if the target grid point is occupied by a blocked tile.
+	 * 
+	 * @param x
+	 *            X coordinate of the point.
+	 * @param y
+	 *            Y coordinate of the point.
+	 * @return
+	 */
 	public boolean isBlocked(int x, int y) {
-		for(Tile t : blocked) {
-			if((int)t.getX() == x && (int)t.getY() == y) {
+
+		/*
+		 * Check if the point is blocked.
+		 */
+		for (Tile t : blocked) {
+			if ((int) t.getX() == x && (int) t.getY() == y) {
+				return true;
+			}
+		}
+
+		/*
+		 * Check if the point is movable. If movable check if it can be moved
+		 * safely. If it can be moved, mark the movable as moving and return
+		 * true.
+		 */
+
+		return false;
+	}
+
+	/**
+	 * Checks if the target grid point is occupied by a movable tile.
+	 * 
+	 * @param x
+	 *            X coordinate of the point.
+	 * @param y
+	 *            Y coordinate of the point.
+	 * @return True if the point is occupied by a movable. False otherwise.
+	 */
+	public boolean isMovable(int x, int y) {
+		for (Tile t : movable) {
+			if ((int) t.getX() == x && (int) t.getY() == y) {
 				return true;
 			}
 		}
 		return false;
 	}
-	
-	/**
-	 * 
-	 * @param destination Point at which the player is trying to move.
-	 * @return True if the point is occupied by a movable. False otherwise.
-	 */
-	public boolean isPushingMovable(Point destination) {
-		return false;
-	}
-	
-	
+
 	public void setDisplayedArea(Rectangle area) {
 		this.area = area;
 	}
-	
+
 	public Rectangle getDisplayedArea() {
 		return area;
 	}
-	
+
+	public void update(int delta) {
+		player.update(delta);
+	}
+
+	public void render() {
+
+		// center on player
+		camera.centerOn(player.getCenter());
+
+		// update the rendered area rectangle
+		setDisplayedArea(new Rectangle(camera.x, camera.y, Main.WIDTH,
+				Main.HEIGHT));
+
+		camera.translate();
+		renderLayers(); // render the map and objects
+		player.render(); // render the player
+		camera.untranslate();
+
+		if (Main.DEBUGG) {
+			camera.translate();
+			Debugg.printTileGrid(this);
+			camera.untranslate();
+
+			Debugg.printTilesDisplayed(tilesDisplaying);
+			Debugg.printActiveScreenName("game");
+		}
+
+	}
+
+	private void renderLayers() {
+
+		// Reset the tiles on screen counter.
+		tilesDisplaying = 0;
+
+		// Render the blocked layer.
+		for (Tile t : blocked) {
+			if (t.isCollingWidth(getDisplayedArea())) {
+				t.render();
+				tilesDisplaying++;
+			}
+		}
+
+		// Render the movable layer.
+		for (Tile t : movable) {
+			if (t.isCollingWidth(getDisplayedArea())) {
+				t.render();
+				tilesDisplaying++;
+			}
+		}
+
+		// Render the sliding layer.
+		for (Tile t : sliding) {
+			if (t.isCollingWidth(getDisplayedArea())) {
+				t.render();
+				tilesDisplaying++;
+			}
+		}
+
+	}
+
 }

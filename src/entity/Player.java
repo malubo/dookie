@@ -100,7 +100,7 @@ public class Player extends Entity {
 	 * Time in miliseconds between any action is available. Triggered when
 	 * performing any action.
 	 */
-	private static final long ACTION_COOLDOWN = 295;
+	private static final long ACTION_COOLDOWN = 260;
 
 	/**
 	 * Keys associated with the player.
@@ -122,14 +122,15 @@ public class Player extends Entity {
 		this.keys = keys;
 		this.level = level;
 		this.playerType = playerType;
-		activateCooldown();
-		init();
-	}
 
-	private void init() {
 		state = State.standing;
 		direction = Direction.south;
+		activateCooldown();
 
+		loadAnimations();
+	}
+
+	private void loadAnimations() {
 		SpriteSheet player = Resource.getSpriteSheet("res/image/player.png",
 				32, 32);
 
@@ -176,7 +177,6 @@ public class Player extends Entity {
 		walkingWest.addFrame(player.getSprite(9, playerType), 100);
 		walkingWest.addFrame(player.getSprite(11, playerType), 100);
 		animations.put(ANIMATION_WALKING_WEST, walkingWest);
-
 	}
 
 	public Direction getDirection() {
@@ -197,15 +197,22 @@ public class Player extends Entity {
 
 	@Override
 	public void update(int delta) {
-
-		handleInput(delta); // get keyboard input
-
-		if (!moving) {
-			setState(State.standing); // reset state
-		}
+		
+		/*
+		 * Handle input.
+		 */
+		handleInput(delta);
 
 		/*
-		 * Player is moving. Destination point is not set.
+		 * If the player is not moving reset state to standing.
+		 */
+		if (!moving) {
+			setState(State.standing);
+		}
+		
+		/*
+		 * Destination point is not set.
+		 * Player is moving.
 		 */
 		if (moving && destination == null) {
 
@@ -234,15 +241,22 @@ public class Player extends Entity {
 		}
 
 		/*
-		 * Cancel destination if path is blocked.
+		 * Destination point is set. 
+		 * Check if the destination point is an open space.
+		 * Cancel movement if the destination is blocked.
 		 */
 		if (destination != null
-				&& level.isBlocked((int) destination.getX(),
-						(int) destination.getY())) {
+				&& level.isBlocked((int) destination.getX(), (int) destination.getY())) {
 			destination = null;
 			moving = false;
 			state = State.standing;
 		}
+
+		/*
+		 * Check if destination has a movable. Check if the movable can be
+		 * pushed.
+		 */
+		// TBD
 
 		/*
 		 * Player is moving. Destination point is set. Move towards the
@@ -293,14 +307,16 @@ public class Player extends Entity {
 			this.moveTo(newX, newY);
 		}
 
-		// update animations
+		/*
+		 * Update animations.
+		 */
 		updateAnimations(delta);
 	}
 
 	private void handleInput(long delta) {
-		
+
 		if (moving) {
-			return; // bugger off if moving in progress
+			return; // bugger off if moving is in progress
 		}
 
 		if (isCooldownReady()) {
@@ -309,61 +325,65 @@ public class Player extends Entity {
 
 		// UP PRESSED
 		if (keys.up.isDown() && !keys.down.isDown()) {
-			if(direction == Direction.north) {
-				if(state == State.standing || state == State.walking) {
+			if (direction == Direction.north) {
+				if (state == State.standing || state == State.walking) {
 					setState(State.walking);
 					moving = true;
 					activateCooldown();
 				}
 			}
-			
+
 			if (direction != Direction.north && state == State.standing) {
 				setDirection(Direction.north);
+				//activateCooldown();
 			}
 		}
 
 		// RIGHT PRESSED
 		if (keys.right.isDown() && !keys.left.isDown()) {
 			if (direction == Direction.east) {
-				if(state == State.standing || state == State.walking) {
+				if (state == State.standing || state == State.walking) {
 					setState(State.walking);
 					moving = true;
 					activateCooldown();
 				}
-			}				
-			
+			}
+
 			if (direction != Direction.east && state == State.standing) {
 				setDirection(Direction.east);
+				//activateCooldown();
 			}
 		}
 
 		// DOWN PRESSED
 		if (keys.down.isDown() && !keys.up.isDown()) {
 			if (direction == Direction.south) {
-				if(state == State.standing || state == State.walking) {
+				if (state == State.standing || state == State.walking) {
 					setState(State.walking);
 					moving = true;
 					activateCooldown();
 				}
-			}				
-			
+			}
+
 			if (direction != Direction.south && state == State.standing) {
 				setDirection(Direction.south);
+				//activateCooldown();
 			}
 		}
 
 		// LEFT PRESSED
 		if (keys.left.isDown() && !keys.right.isDown()) {
 			if (direction == Direction.west) {
-				if(state == State.standing || state == State.walking) {
+				if (state == State.standing || state == State.walking) {
 					setState(State.walking);
 					moving = true;
 					activateCooldown();
 				}
-			}				
-			
+			}
+
 			if (direction != Direction.west && state == State.standing) {
 				setDirection(Direction.west);
+				//activateCooldown();
 			}
 		}
 	}
@@ -379,7 +399,7 @@ public class Player extends Entity {
 	/**
 	 * Updates animations.
 	 * 
-	 * @param delta
+	 * @param delta Delta
 	 */
 	private void updateAnimations(long delta) {
 		for (Integer an : animations.keySet()) {
