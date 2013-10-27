@@ -209,7 +209,7 @@ public class Player extends Entity {
 		handleInput(delta);
 
 		/*
-		 * If the player is not moving reset state to standing.
+		 * If the player is not moving reset the state to standing.
 		 */
 		if (!moving) {
 			setState(State.standing);
@@ -257,12 +257,11 @@ public class Player extends Entity {
 			}
 
 			/*
-			 * Check if the destination is a sliding tile & not occupied by
-			 * blocked or movable. If destination is sliding, check if can slide
-			 * onto next tile.
+			 * Check if the destination is a movable tile, check if it can be
+			 * moved onto next tile. Stop movement if the check fails.
 			 */
-			Point p = null;
-			if (level.isMovable(destination)) {
+			else if (level.isMovable(destination)) {
+				Point p = null;
 				switch (direction) {
 				case north:
 					p = new Point((int) destination.getX(),
@@ -302,7 +301,6 @@ public class Player extends Entity {
 					break;
 				}
 			}
-
 		}
 
 		/*
