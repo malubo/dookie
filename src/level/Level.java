@@ -140,6 +140,10 @@ public class Level {
 
 		return false;
 	}
+	
+	public boolean isBlocked(Point p) {
+		return isBlocked((int)p.getX(), (int)p.getY());
+	}
 
 	/**
 	 * Checks if the target grid point is occupied by a movable tile.
@@ -157,6 +161,10 @@ public class Level {
 			}
 		}
 		return false;
+	}
+	
+	public boolean isMovable(Point p) {
+		return isMovable((int)p.getX(), (int)p.getY()); 
 	}
 
 	public void setDisplayedArea(Rectangle area) {

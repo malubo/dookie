@@ -5,7 +5,6 @@ import org.newdawn.slick.Image;
 import org.newdawn.slick.geom.Point;
 
 import entity.Entity;
-import entity.Player;
 
 public class Tile extends Entity {
 
