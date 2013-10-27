@@ -18,12 +18,16 @@ import util.Resource;
 
 public class Level {
 
-	private static final int BLOCKED_LAYER_INDEX = 0;
-	private static final int MOVABLE_LAYER_INDEX = 1;
-	private static final int SLIDING_LAYER_INDEX = 2;
-	private static final int ENTITY_LAYER_INDEX = 10;
+	private static final int BLOCKED_LAYER_INDEX = 0; // blocked imovable tiles
+	private static final int MOVABLE_LAYER_INDEX = 1; // movable tiles
+	private static final int SLIDING_LAYER_INDEX = 2; // sliding imovable floor
+														// tiles
+	private static final int ITEM_LAYER_INDEX = 3; // game items, keys, doors,
+													// traps
+	private static final int ENTITY_LAYER_INDEX = 4; // where the player and
+														// npc's are at
 
-	public TiledMap map;
+	public TiledMap map; // tiled map used to load up the layer lists of tiles
 
 	public int tileWidth; // tile width in pixels
 	public int tileHeight; // tile height in pixels
@@ -38,9 +42,10 @@ public class Level {
 	private Keys keys;
 	private Camera camera;
 
-	ArrayList<Tile> blocked = new ArrayList<Tile>();
-	ArrayList<Tile> movable = new ArrayList<Tile>();
-	ArrayList<Tile> sliding = new ArrayList<Tile>();
+	private ArrayList<Tile> blocked = new ArrayList<Tile>();
+	private ArrayList<Tile> movable = new ArrayList<Tile>();
+	private ArrayList<Tile> sliding = new ArrayList<Tile>();
+	private ArrayList<Tile> item = new ArrayList<Tile>();
 
 	/**
 	 * Displayed area of the map. In pixels.
@@ -102,8 +107,8 @@ public class Level {
 		}
 
 		// identify the player position
-		player = new Player(32, 32, 32, 32, keys, this,
-				Player.PLAYER_TYPE_GENIE);
+		player = new Player(32, 32, 32, 32, this.keys, this,
+				Player.PLAYER_TYPE_PRINCESS);
 
 	}
 
@@ -164,12 +169,60 @@ public class Level {
 
 	public void update(int delta) {
 		player.update(delta);
+
+		/**
+		 * Update tile movements.
+		 */
+		for (Tile t : movable) {
+
+			float px = player.getX();
+			float py = player.getY();
+			float pw = player.getWidth();
+			float ph = player.getHeight();
+			Point pd = player.getDestination();
+
+			if (t.isCollingWidth(player.getBounds())) {
+
+				float tx = t.getX();
+				float ty = t.getY();
+				float tw = t.getWidth();
+				float th = t.getHeight();
+
+				// horizontal pushing
+				if(py == ty){
+					if(tx > px) {
+						// pushing from left
+						t.moveTo(px + Player.WIDTH, ty);
+					}
+					if(tx < px) {
+						// pushing from right
+						t.moveTo(px - Player.WIDTH, ty);
+					}
+				}
+				
+				// vertical pushing
+				if(px == tx) {
+					if(ty > py) {
+						// pushing from top
+						t.moveTo(tx, py + Player.HEIGHT);
+					}
+					if(ty < py) {
+						// pushing from bottom
+						t.moveTo(tx, py - Player.HEIGHT);
+					}
+				}
+			}
+		}
+
+		/**
+		 * Update tile animations.
+		 */
 	}
 
 	public void render() {
 
 		// center on player
-		camera.centerOn(player.getCenter());
+		camera.centerOn(player.getCentre());
 
 		// update the rendered area rectangle
 		setDisplayedArea(new Rectangle(camera.x, camera.y, Main.WIDTH,
@@ -180,7 +233,7 @@ public class Level {
 		player.render(); // render the player
 		camera.untranslate();
 
-		if (Main.DEBUGG) {
+		if (Main.DEBUG) {
 			camera.translate();
 			Debugg.printTileGrid(this);
 			camera.untranslate();

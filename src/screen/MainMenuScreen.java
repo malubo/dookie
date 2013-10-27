@@ -70,7 +70,7 @@ public class MainMenuScreen implements Screen {
 	@Override
 	public void render() {
 		menu.render();
-		if (Main.DEBUGG) {
+		if (Main.DEBUG) {
 			String sn = "main menu";
 			ui.Font.renderText(sn, Main.WIDTH / 2 - ui.Font.getMessageWidth(sn)
 					/ 2, 2);

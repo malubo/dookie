@@ -74,7 +74,7 @@ public class Player extends Entity {
 	/**
 	 * Walking speed.
 	 */
-	static final float WALKING_SPEED = 0.0992f;
+	public static final float SPEED = 0.105f;
 
 	/**
 	 * Level associated with the player.
@@ -87,7 +87,7 @@ public class Player extends Entity {
 	private boolean moving = false;
 
 	/**
-	 * Destination coords when the player is moving.
+	 * Destination coordinates when the player is moving.
 	 */
 	private Point destination = null;
 
@@ -97,7 +97,7 @@ public class Player extends Entity {
 	private long lastAction;
 
 	/**
-	 * Time in miliseconds between any action is available. Triggered when
+	 * Time in milliseconds between any action is available. Triggered when
 	 * performing any action.
 	 */
 	private static final long ACTION_COOLDOWN = 260;
@@ -128,6 +128,7 @@ public class Player extends Entity {
 		activateCooldown();
 
 		loadAnimations();
+		setVisible(true); 
 	}
 
 	private void loadAnimations() {
@@ -194,6 +195,10 @@ public class Player extends Entity {
 	private void setState(State state) {
 		this.state = state;
 	}
+	
+	public Point getDestination() {
+		return destination;
+	}
 
 	@Override
 	public void update(int delta) {
@@ -253,11 +258,19 @@ public class Player extends Entity {
 		}
 
 		/*
+		 * Check if the destination is a sliding tile & not occupied by blocked or movable.
+		 * If destination is sliding, check if can slide onto next tile.
+		 */
+		
+		// TBD
+		
+		/*
 		 * Check if destination has a movable. Check if the movable can be
 		 * pushed.
 		 */
-		// TBD
-
+		
+		
+		
 		/*
 		 * Player is moving. Destination point is set. Move towards the
 		 * destination point.
@@ -271,7 +284,7 @@ public class Player extends Entity {
 
 			switch (direction) {
 			case north:
-				newY -= WALKING_SPEED * delta;
+				newY -= SPEED * delta;
 				if (newY < destination.getY()) {
 					newY = destination.getY();
 					moving = false;
@@ -279,7 +292,7 @@ public class Player extends Entity {
 				}
 				break;
 			case east:
-				newX += WALKING_SPEED * delta;
+				newX += SPEED * delta;
 				if (newX > destination.getX()) {
 					newX = destination.getX();
 					moving = false;
@@ -287,7 +300,7 @@ public class Player extends Entity {
 				}
 				break;
 			case south:
-				newY += WALKING_SPEED * delta;
+				newY += SPEED * delta;
 				if (newY > destination.getY()) {
 					newY = destination.getY();
 					moving = false;
@@ -295,7 +308,7 @@ public class Player extends Entity {
 				}
 				break;
 			case west:
-				newX -= WALKING_SPEED * delta;
+				newX -= SPEED * delta;
 				if (newX < destination.getX()) {
 					newX = destination.getX();
 					moving = false;
@@ -411,10 +424,14 @@ public class Player extends Entity {
 	@Override
 	public void render() {
 
-		if (Main.DEBUGG) {
+		if(!isVisible()) {
+			return;
+		}
+		
+		if (Main.DEBUG) {
 			renderDebuggInfo();
 		}
-
+		
 		if (state == State.standing) {
 			switch (direction) {
 			case north:

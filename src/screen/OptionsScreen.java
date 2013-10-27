@@ -39,7 +39,7 @@ public class OptionsScreen implements Screen {
 
 	@Override
 	public void render() {
-		if (Main.DEBUGG) {
+		if (Main.DEBUG) {
 			String sn = "options";
 			ui.Font.renderText(sn, Main.WIDTH / 2 - ui.Font.getMessageWidth(sn)
 					/ 2, 2);

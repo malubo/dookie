@@ -3,9 +3,29 @@
  <tileset firstgid="1" name="tiles" tilewidth="32" tileheight="32" spacing="2" margin="2">
   <image source="tiles.png" width="128" height="256"/>
  </tileset>
- <layer name="Tile Layer 1" width="20" height="20">
+ <layer name="blocked" width="20" height="20">
   <data encoding="base64" compression="gzip">
-   H4sIAAAAAAAAC8WUiQ6AIAiGyU67l+//rsm0zZiKdv4bK9I+EREJAP1DJu3zqlriH9yQSobXZPLoWK2tc3yRyZPEH7UVzPo+XmNjEXDeE36jOeN4q/Me+zcnPjeeFE2JPJo/ThzPN3/O5Kkb61+J79Bm7Qse1jyeJdYq3rEKTK28fR5/8gYyhjng+kuM5xPtRyEtYHoFx0u9v7g3Bece/VS/3wGph++0QAYAAA==
+   H4sIAAAAAAAAC82Uiw6AIAhF6aFl///BdZduxShCacXGHKhHRCQR0eKkKY+1MjG7cK9kUHjRyONzYdP5YPdGXhJ8nXK+xIs5lp7Od4KP58wS393eGl5w5kn5a+FJ6715Wn19Hd8THmoeb4laxR8baa+Vt9/jTzzkQOsvFh6E96NWXs3/LT3aq9+vGU3qPUAGAAA=
+  </data>
+ </layer>
+ <layer name="movable" width="20" height="20">
+  <data encoding="base64" compression="gzip">
+   H4sIAAAAAAAAC2NgGAUjGfCTqU+ATDlqAm462TNUAd9AO2CQAWEC8vRKt8MJAABp1MhBQAYAAA==
+  </data>
+ </layer>
+ <layer name="sliding" width="20" height="20" visible="0">
+  <data encoding="base64" compression="gzip">
+   H4sIAAAAAAAAC2NgGAWjYBSMglEwCkgHADV9EcVABgAA
+  </data>
+ </layer>
+ <layer name="item" width="20" height="20" visible="0">
+  <data encoding="base64" compression="gzip">
+   H4sIAAAAAAAAC2NgGAWjYBSMglEwCkgHADV9EcVABgAA
+  </data>
+ </layer>
+ <layer name="entity" width="20" height="20" visible="0">
+  <data encoding="base64" compression="gzip">
+   H4sIAAAAAAAAC2NgGAWjYBSMglEwCkgHADV9EcVABgAA
   </data>
  </layer>
 </map>

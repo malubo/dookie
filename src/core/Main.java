@@ -30,7 +30,7 @@ public class Main {
 	/**
 	 * Version.
 	 */
-	public static final String VERSION = "0.0.2";
+	public static final String VERSION = "0.0.3";
 
 	/**
 	 * Width of the game canvas.
@@ -43,24 +43,24 @@ public class Main {
 	public static final int HEIGHT = 384;
 
 	/**
-	 * Fullscreen mode.
+	 * Full screen mode indicator.
 	 */
-	public static final boolean FULLSCREEN = true;
+	private static final boolean FULLSCREEN = true;
 
 	/**
-	 * Vertical sync.
+	 * Vertical sync indicator.
 	 */
-	public static final boolean VSYNC = true;
+	private static final boolean VSYNC = true;
 
 	/**
-	 * Frames per second cap.
+	 * Frames per second cap. Only works if VSYNC is off.
 	 */
-	public static final int FPS_CAP = 200;
+	private static final int FPS_CAP = 200;
 
 	/**
-	 * Debugg mode.
+	 * Debug mode indicator.
 	 */
-	public static final boolean DEBUGG = true;
+	public static final boolean DEBUG = false;
 
 	/**
 	 * Frames per second meter. Contains the current FPS.
@@ -147,7 +147,7 @@ public class Main {
 		try {
 			Mouse.create();
 			if (FULLSCREEN) {
-				Mouse.setGrabbed(true);
+				Mouse.setGrabbed(true); // disables the mouse cursor
 			}
 		} catch (LWJGLException e) {
 			e.printStackTrace();
@@ -185,11 +185,11 @@ public class Main {
 	 */
 	public void loop() {
 
-		// set intro screen as active screen
+		// set introduction screen as active screen
 		enterScreen(SplashScreen.ID);
 
-		if (DEBUGG) {
-			enterScreen(GameScreen.ID);
+		if (DEBUG) {
+			enterScreen(GameScreen.ID); // skip the introduction screen
 		}
 
 		while (!Display.isCloseRequested()) {
@@ -200,11 +200,13 @@ public class Main {
 			// update the FPS counter
 			updateFPS();
 
-			// clear the screen with black color
+			// clear the screen with black colour
 			glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
 
-			// enable 2D textures, disabling them for the debugg mode grid
-			// painting
+			/*
+			 * Enable 2D textures, disabling them every frame for the debug mode
+			 * grid rendering
+			 */
 			glEnable(GL11.GL_TEXTURE_2D);
 
 			// get input
@@ -216,20 +218,21 @@ public class Main {
 			// render
 			activeScreen.render();
 
-			// debugg section
-			if (DEBUGG) {
+			// debug section
+			if (DEBUG) {
 				Debugg.printFPS(fps);
 				Debugg.printVersionNumber();
 			}
 
-			// yield
+			// give other threads a space
 			Thread.yield();
 
-			// update display & sync fps
+			// update display
 			Display.update();
+			
+			// synchronise FPS
 			Display.sync(FPS_CAP);
 		}
-		exit();
 	}
 
 	/**

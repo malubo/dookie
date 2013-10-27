@@ -18,25 +18,12 @@ public class GameScreen implements Screen {
 	Main main;
 
 	/**
-	 * Player.
-	 */
-	Player player;
-
-	/**
-	 * Camera, watching from above.
-	 */
-	Camera camera;
-
-	/**
 	 * Level.
 	 */
 	Level level;
 
 	/**
-	 * 
-	 * 
-	 * @param main
-	 *            Main class.
+	 * @param main Main
 	 */
 	public GameScreen(Main main) {
 		this.main = main;
@@ -44,21 +31,17 @@ public class GameScreen implements Screen {
 
 	@Override
 	public void init() {	
-		level = new Level("level1");
-		level.player = new Player(32, 32, 32, 32, main.getKeys(), level, Player.PLAYER_TYPE_GENIE);
-		camera = new Camera(0, 0, level.mapWidth, level.mapHeight);
+		level = new Level("level1", main.getKeys());
 	}
 
 	@Override
 	public void enter() {
-		//camera.centerOn(player.getCenter());
-		camera.centerOn(level.player.getCenter());
 	}
 
 	@Override
 	public void update(int delta) {
 
-		level.player.update(delta);
+		level.update(delta);
 
 		// exit
 		if (main.getKeys().exit.wasDown()) {
@@ -68,21 +51,8 @@ public class GameScreen implements Screen {
 
 	@Override
 	public void render() {
-		camera.centerOn(level.player.getX() + level.player.getWidth() / 2, level.player.getY() + level.player.getHeight() / 2);
-		level.renderMap(camera.x, camera.y);
-		
-		camera.translate();
-		level.player.render();
-		camera.untranslate();
-
-		if (Main.DEBUGG) {
-			camera.translate();
-			Debugg.printTileGrid(level); 
-			camera.untranslate();
-			
-			Debugg.printTilesDisplayed(level.tilesDisplaying);
-			Debugg.printActiveScreenName("game");
-		}
+		//camera.centerOn(level.player.getX() + level.player.getWidth() / 2, level.player.getY() + level.player.getHeight() / 2);
+		level.render();
 	}
 
 	@Override
