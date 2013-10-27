@@ -465,46 +465,43 @@ public class Player extends Entity {
 			renderDebuggInfo();
 		}
 
-		if (state == State.standing) {
-			switch (direction) {
-			case north:
+		switch (direction) {
+		case north:
+			if (state == State.standing) {
 				animations.get(ANIMATION_STANDING_NORTH).getCurrentFrame()
 						.draw(getX(), getY());
-				break;
-			case east:
-				animations.get(ANIMATION_STANDING_EAST).getCurrentFrame()
-						.draw(getX(), getY());
-				break;
-			case south:
-				animations.get(ANIMATION_STANDING_SOUTH).getCurrentFrame()
-						.draw(getX(), getY());
-				break;
-			case west:
-				animations.get(ANIMATION_STANDING_WEST).getCurrentFrame()
-						.draw(getX(), getY());
-				break;
-			}
-		}
-
-		if (state == State.walking) {
-			switch (direction) {
-			case north:
+			} else if (state == State.walking) {
 				animations.get(ANIMATION_WALKING_NORTH).getCurrentFrame()
 						.draw(getX(), getY());
-				break;
-			case east:
+			}
+			break;
+		case east:
+			if (state == State.standing) {
+				animations.get(ANIMATION_STANDING_EAST).getCurrentFrame()
+				.draw(getX(), getY());
+			} else if (state == State.walking) {
 				animations.get(ANIMATION_WALKING_EAST).getCurrentFrame()
 						.draw(getX(), getY());
-				break;
-			case south:
+			}
+			break;
+		case south:
+			if (state == State.standing) {
+				animations.get(ANIMATION_STANDING_SOUTH).getCurrentFrame()
+				.draw(getX(), getY());
+			} else if (state == State.walking) {
 				animations.get(ANIMATION_WALKING_SOUTH).getCurrentFrame()
 						.draw(getX(), getY());
-				break;
-			case west:
+			}
+			break;
+		case west:
+			if (state == State.standing) {
+				animations.get(ANIMATION_STANDING_WEST).getCurrentFrame()
+				.draw(getX(), getY());
+			} else if (state == State.walking) {
 				animations.get(ANIMATION_WALKING_WEST).getCurrentFrame()
 						.draw(getX(), getY());
-				break;
 			}
+			break;
 		}
 	}
 

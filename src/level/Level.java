@@ -5,7 +5,6 @@ import input.Keys;
 import java.util.ArrayList;
 
 import org.newdawn.slick.Image;
-import org.newdawn.slick.SlickException;
 import org.newdawn.slick.geom.Point;
 import org.newdawn.slick.geom.Rectangle;
 import org.newdawn.slick.tiled.TiledMap;
@@ -18,9 +17,9 @@ import util.Resource;
 
 public class Level {
 
-	private static final int BLOCKED_LAYER_INDEX = 0; // blocked imovable tiles
+	private static final int BLOCKED_LAYER_INDEX = 0; // blocked immovable tiles
 	private static final int MOVABLE_LAYER_INDEX = 1; // movable tiles
-	private static final int SLIDING_LAYER_INDEX = 2; // sliding imovable floor
+	private static final int SLIDING_LAYER_INDEX = 2; // sliding immovable floor
 														// tiles
 	private static final int ITEM_LAYER_INDEX = 3; // game items, keys, doors,
 													// traps
@@ -45,7 +44,7 @@ public class Level {
 	private ArrayList<Tile> blocked = new ArrayList<Tile>();
 	private ArrayList<Tile> movable = new ArrayList<Tile>();
 	private ArrayList<Tile> sliding = new ArrayList<Tile>();
-	private ArrayList<Tile> item = new ArrayList<Tile>();
+	private ArrayList<Tile> items = new ArrayList<Tile>();
 
 	/**
 	 * Displayed area of the map. In pixels.

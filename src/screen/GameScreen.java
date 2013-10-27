@@ -1,9 +1,7 @@
 package screen;
 
-import util.Debugg;
 import level.Level;
 import core.*;
-import entity.Player;
 
 public class GameScreen implements Screen {
 

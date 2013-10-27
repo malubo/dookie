@@ -55,7 +55,7 @@ public class Main {
 	/**
 	 * Frames per second cap. Only works if VSYNC is off.
 	 */
-	private static final int FPS_CAP = 200;
+	private static final int FPS_CAP = 500;
 
 	/**
 	 * Debug mode indicator.
@@ -128,7 +128,7 @@ public class Main {
 				Display.setDisplayMode(Display.getDesktopDisplayMode());
 				Display.setFullscreen(true);
 			} else {
-				Display.setDisplayMode(new DisplayMode(800, 600));
+				Display.setDisplayMode(new DisplayMode(512*2, 384*2));
 			}
 
 			// Vertical Synchronisation

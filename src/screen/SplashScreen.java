@@ -23,7 +23,7 @@ public class SplashScreen implements Screen {
 	Image background;
 
 	private float fadeAlpha = -0.3f;
-	private float fadeSpeed = 0.0008f;
+	private float fadeSpeed = 0.00125f;
 	// private final float MAX_ALPHA = 1.6f;
 	private final float MAX_ALPHA = 1f;
 
@@ -39,7 +39,8 @@ public class SplashScreen implements Screen {
 
 	@Override
 	public void init() {
-		background = Resource.getImage("res/image/bck.png");
+		//background = Resource.getImage("res/image/bck.png");
+		background = Resource.getImage("res/image/splash_big.png").getScaledCopy(Main.WIDTH, Main.HEIGHT); 
 		background.setAlpha(0f);
 	}
 
