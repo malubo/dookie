@@ -13,6 +13,7 @@ import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
 import org.lwjgl.opengl.GL11;
 
+import screen.CharacterSelectionScreen;
 import screen.GameScreen;
 import screen.MainMenuScreen;
 import screen.OptionsScreen;
@@ -30,7 +31,7 @@ public class Main {
 	/**
 	 * Version.
 	 */
-	public static final String VERSION = "0.0.3";
+	public static final String VERSION = "0.0.3.1";
 
 	/**
 	 * Width of the game canvas.
@@ -60,7 +61,7 @@ public class Main {
 	/**
 	 * Debug mode indicator.
 	 */
-	public static final boolean DEBUG = false;
+	public static final boolean DEBUG = true;
 
 	/**
 	 * Frames per second meter. Contains the current FPS.
@@ -178,6 +179,7 @@ public class Main {
 		screens.add(new MainMenuScreen(this));
 		screens.add(new GameScreen(this));
 		screens.add(new OptionsScreen(this));
+		screens.add(new CharacterSelectionScreen(this));
 	}
 
 	/**

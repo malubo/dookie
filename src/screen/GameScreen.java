@@ -11,15 +11,24 @@ public class GameScreen implements Screen {
 	public static final int ID = 3;
 
 	/**
-	 * Refference to the main class. Used for managing screens, input, timing.
+	 * Reference to the main class. Used for managing screens, input, timing.
 	 */
 	Main main;
+	
+	public static final int MIN_LEVEL_NUMBER = 0;
+	public static final int MAX_LEVEL_NUMBER = 99;
+
+	/**
+	 * Number of the active level.
+	 */
+	int activeLevelNumber = MIN_LEVEL_NUMBER;
 
 	/**
 	 * Level.
 	 */
 	Level level;
-
+	
+	
 	/**
 	 * @param main Main
 	 */
@@ -49,7 +58,6 @@ public class GameScreen implements Screen {
 
 	@Override
 	public void render() {
-		//camera.centerOn(level.player.getX() + level.player.getWidth() / 2, level.player.getY() + level.player.getHeight() / 2);
 		level.render();
 	}
 
