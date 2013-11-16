@@ -1,21 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <map version="1.0" orientation="orthogonal" width="20" height="20" tilewidth="32" tileheight="32">
- <tileset firstgid="1" name="tiles" tilewidth="32" tileheight="32" spacing="2" margin="2">
-  <image source="tiles.png" width="128" height="256"/>
+ <tileset firstgid="1" name="tiles2" tilewidth="32" tileheight="32" spacing="2" margin="2">
+  <image source="tiles2.png" width="256" height="512"/>
  </tileset>
  <layer name="blocked" width="20" height="20">
   <data encoding="base64" compression="gzip">
-   H4sIAAAAAAAAC82Uiw6AIAhF6aFl///BdZduxShCacXGHKhHRCQR0eKkKY+1MjG7cK9kUHjRyONzYdP5YPdGXhJ8nXK+xIs5lp7Od4KP58wS393eGl5w5kn5a+FJ6715Wn19Hd8THmoeb4laxR8baa+Vt9/jTzzkQOsvFh6E96NWXs3/LT3aq9+vGU3qPUAGAAA=
+   H4sIAAAAAAAAC2NiYGAQoxJmgtLUAjBzsQFGKpvHRGXz+IFYAI88qeaRA0bNo495glQ2j1hAqXlcVDZPgMrmoYNR8yg3D1ZGU6u8BwDtv9QNQAYAAA==
   </data>
  </layer>
  <layer name="movable" width="20" height="20">
   <data encoding="base64" compression="gzip">
-   H4sIAAAAAAAAC2NgGAUjGfCTqU+ATDlqAm462TNUAd9AO2CQAWEC8vRKt8MJAABp1MhBQAYAAA==
+   H4sIAAAAAAAAC2NgGAW0BhJ0skecTvYMFnsJAZWBdsAoGHAgR6Y+bSCWpaZDhikAACM5pzFABgAA
   </data>
  </layer>
- <layer name="sliding" width="20" height="20" visible="0">
+ <layer name="sliding" width="20" height="20">
   <data encoding="base64" compression="gzip">
-   H4sIAAAAAAAAC2NgGAWjYBSMglEwCkgHADV9EcVABgAA
+   H4sIAAAAAAAAC2NgGAWjgDaABQ0PF/Nw6aO2+wYDwOcPcvxI7XAZLuE8VAEAVRJQ7UAGAAA=
   </data>
  </layer>
  <layer name="item" width="20" height="20" visible="0">

@@ -6,7 +6,7 @@ import org.lwjgl.opengl.GL11;
 
 import core.Main;
 
-public class Debugg {
+public class Debug {
 
 	public static void printFPS(int fps) {
 		ui.Font.renderText(Integer.toString(fps) + "fps", 1, 1);

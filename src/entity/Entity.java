@@ -1,5 +1,8 @@
 package entity;
 
+import level.Level;
+import level.Tile;
+
 import org.newdawn.slick.geom.Point;
 import org.newdawn.slick.geom.Rectangle;
 import org.newdawn.slick.geom.Shape;
@@ -7,7 +10,7 @@ import org.newdawn.slick.geom.Shape;
 /**
  * Abstract class designed to be the ancestor for all rectangular game objects.
  * 
- * @author Luboš
+ * @author Luboš Malý
  * 
  */
 public abstract class Entity {
@@ -33,6 +36,11 @@ public abstract class Entity {
 	private float height;
 
 	/**
+	 * Level that the entity exists in.
+	 */
+	private Level level;
+
+	/**
 	 * Indicator of visibility. If visible, will be rendered.
 	 */
 	private boolean visible = true;
@@ -41,6 +49,35 @@ public abstract class Entity {
 	 * Indicator of movement.
 	 */
 	private boolean moving = false;
+
+	/**
+	 * Direction enumerate.
+	 */
+	public enum Direction {
+		north, east, south, west
+	};
+
+	/**
+	 * Direction which the entity is facing.
+	 */
+	private Direction direction;
+
+	/**
+	 * Type enumerate.
+	 */
+	public enum Type {
+		player, blocked, movable, sliding, item
+	};
+
+	/**
+	 * Entity type.
+	 */
+	private Type type;
+
+	/**
+	 * Destination point on the grid.
+	 */
+	private Point destination;
 
 	/**
 	 * Constructor.
@@ -59,18 +96,127 @@ public abstract class Entity {
 	 * Constructor.
 	 * 
 	 * @param x
-	 *            X-axis coordinate in pixels
+	 *            X-axis coordinate in pixels.
 	 * @param y
-	 *            Y-axis coordinate in pixels
+	 *            Y-axis coordinate in pixels.
 	 * @param width
-	 *            Width in pixels
+	 *            Width in pixels.
 	 * @param height
-	 *            Height in pixels
+	 *            Height in pixels.
 	 */
-	public Entity(float x, float y, float width, float height) {
+	public Entity(float x, float y, float width, float height, Level level) {
 		this(x, y);
 		this.width = width;
 		this.height = height;
+		this.level = level;
+	}
+
+	/**
+	 * Starts movement. Determines the destination point. Turns on the movement
+	 * indicator. <br>
+	 * Direction is specified because only player has accurate direction.
+	 * 
+	 * @param direction
+	 *            Direction of the movement. Player's direction in most cases.
+	 */
+	public void startMovement(Direction direction) {
+
+		// Set the movement direction.
+		setDirection(direction);
+
+		// Set a new destination point.
+		setDestination(getNewDestinationPoint((int) getX(), (int) getY()));
+
+		// If the destination is different from current position start the
+		// movement.
+		if (getDestination().getX() != getX()
+				&& getDestination().getY() != getY()) {
+			setMoving(true);
+		} else {
+			stopMovement();
+		}
+	}
+
+	/**
+	 * Calculates the destination point. Takes into account sliding tiles.
+	 * 
+	 * @param x
+	 *            X coordinate of current position.
+	 * @param y
+	 *            Y coordinate of current position.
+	 * @return Definitive destination point.<br>
+	 *         Returns null if the path is blocked.
+	 */
+	private Point getNewDestinationPoint(int x, int y) {
+
+		Point newDestinationPoint = null;
+		Point behindNewDestinationPoint = null;
+
+		// New destination X, Y coordinates.
+		int destinationX = x;
+		int destinationY = y;
+
+		// Behind the destination X, Y coordinates.
+		int behindDestinationX = x;
+		int behindDestinationY = y;
+
+		// Find out the coordinates of the destination.
+		switch (getDirection()) {
+		case north:
+			destinationY -= getHeight();
+			behindDestinationY -= getHeight() * 2;
+			break;
+		case east:
+			destinationX += getWidth();
+			behindDestinationX += getWidth() * 2;
+			break;
+		case south:
+			destinationY += getHeight();
+			behindDestinationY += getHeight() * 2;
+			break;
+		case west:
+			destinationX -= getWidth();
+			behindDestinationX -= getWidth() * 2;
+			break;
+		}
+
+		newDestinationPoint = new Point(destinationX, destinationY);
+
+		behindNewDestinationPoint = new Point(behindDestinationX,
+				behindDestinationY);
+
+		// Destination point is blocked.
+		if (level.isBlocked(newDestinationPoint)) {
+			return new Point(x, y);
+		}
+
+		// Destination point is movable.
+		else if (level.isMovable(newDestinationPoint)) {
+
+			// One space behind destination is blocked.
+			if (level.isBlocked(behindNewDestinationPoint)) {
+				return new Point(x, y);
+			}
+
+			// One space behind destination is movable.
+			if (level.isMovable(behindNewDestinationPoint)) {
+				return new Point(x, y);
+			}
+
+			// Get the movable to move.
+			Tile movable = level.getMovable(newDestinationPoint);
+			movable.startMovement(getDirection());
+		}
+
+		return newDestinationPoint;
+	}
+
+	/**
+	 * Stops the movement.
+	 */
+	public void stopMovement() {
+		setDestination(null);
+		setMoving(false);
 	}
 
 	/**
@@ -134,6 +280,36 @@ public abstract class Entity {
 	}
 
 	/**
+	 * Sets the direction.
+	 * 
+	 * @param direction
+	 *            Direction.
+	 */
+	public void setDirection(Direction direction) {
+		this.direction = direction;
+	}
+
+	/**
+	 * Sets the type.
+	 * 
+	 * @param type
+	 *            Type.
+	 */
+	public void setType(Type type) {
+		this.type = type;
+	}
+
+	/**
+	 * Sets the destination point.
+	 * 
+	 * @param destination
+	 *            Destination point.
+	 */
+	public void setDestination(Point destination) {
+		this.destination = destination;
+	}
+
+	/**
 	 * Returns the x-axis coordinate.
 	 * 
 	 * @return X-axis coordinate.
@@ -190,6 +366,33 @@ public abstract class Entity {
 	}
 
 	/**
+	 * Returns the direction.
+	 * 
+	 * @return Direction.
+	 */
+	public Direction getDirection() {
+		return direction;
+	}
+
+	/**
+	 * Returns type.
+	 * 
+	 * @return Type.
+	 */
+	public Type getType() {
+		return type;
+	}
+
+	/**
+	 * Returns the destination point.
+	 * 
+	 * @return Destination point.
+	 */
+	public Point getDestination() {
+		return destination;
+	}
+
+	/**
 	 * Returns the bounds of the entity.
 	 * 
 	 * @return Rectangular bounds of the entity.
@@ -199,12 +402,23 @@ public abstract class Entity {
 	}
 
 	/**
-	 * Returns the centre of the entity.
+	 * Returns the centre point.
 	 * 
-	 * @return Centre point of the entity
+	 * @return Centre point of the entity.
 	 */
 	public Point getCentre() {
 		return new Point(x + (width / 2), y + (height / 2));
+	}
+
+	/**
+	 * Moves the entity in it's direction according to it's speed and delta.<br>
+	 * Takes into account movement indicator, destination point and stops when
+	 * the entity reaches the destination.
+	 * 
+	 * @param delta
+	 */
+	public void move(int delta) {
+		// TBD
 	}
 
 	/**
@@ -212,7 +426,9 @@ public abstract class Entity {
 	 * of pixels.
 	 * 
 	 * @param x
+	 *            X-axis coordinate.
 	 * @param y
+	 *            Y-axis coordinate.
 	 */
 	public void move(float x, float y) {
 		this.x += x;
@@ -223,9 +439,9 @@ public abstract class Entity {
 	 * Changes the location of the entity. Moves the entity to a new location.
 	 * 
 	 * @param x
-	 *            X-axis coordinate in pixels
+	 *            X-axis coordinate.
 	 * @param y
-	 *            Y-axis coordinate in pixels
+	 *            Y-axis coordinate.
 	 */
 	public void moveTo(float x, float y) {
 		this.x = x;

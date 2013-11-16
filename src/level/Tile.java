@@ -17,8 +17,8 @@ public class Tile extends Entity {
 	 */
 	Animation animation = new Animation();
 
-	public Tile(float x, float y, float width, float height, Image image) {
-		super(x, y, width, height);
+	public Tile(float x, float y, float width, float height, Image image, Level level) {
+		super(x, y, width, height, level);
 		animation.addFrame(image, 100);
 		setVisible(true);
 	}

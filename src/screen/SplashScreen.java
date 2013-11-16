@@ -3,6 +3,7 @@ package screen;
 import org.newdawn.slick.Image;
 
 import core.Main;
+import util.Debug;
 import util.Resource;
 
 public class SplashScreen implements Screen {
@@ -13,18 +14,28 @@ public class SplashScreen implements Screen {
 	public static final int ID = 1;
 
 	/**
-	 * Refference to the main class. Used for managing screens, input, timing.
+	 * Reference to the main class. Used for managing screens, input, timing.
 	 */
-	Main main;
+	private Main main;
 
 	/**
 	 * Background image.
 	 */
-	Image background;
+	private Image background;
 
+	/**
+	 * Starting alpha of the background.
+	 */
 	private float fadeAlpha = -0.3f;
+	
+	/**
+	 * Speed at which the background image alpha changes.
+	 */
 	private float fadeSpeed = 0.00125f;
-	// private final float MAX_ALPHA = 1.6f;
+	
+	/**
+	 * Final alpha value before it goes back down.
+	 */
 	private final float MAX_ALPHA = 1f;
 
 	/**
@@ -72,12 +83,8 @@ public class SplashScreen implements Screen {
 		background.draw();
 
 		if (Main.DEBUG) {
-			String sn = "splash";
-			ui.Font.renderText(sn, Main.WIDTH / 2 - ui.Font.getMessageWidth(sn)
-					/ 2, 2);
-			ui.Font.renderText(Main.VERSION,
-					Main.WIDTH / 2 - ui.Font.getMessageWidth(Main.VERSION) / 2,
-					Main.HEIGHT - ui.Font.HEIGHT);
+			Debug.printActiveScreenName("splash"); 
+			Debug.printVersionNumber();
 		}
 
 	}

@@ -19,7 +19,7 @@ import screen.MainMenuScreen;
 import screen.OptionsScreen;
 import screen.Screen;
 import screen.SplashScreen;
-import util.Debugg;
+import util.Debug;
 
 public class Main {
 
@@ -56,12 +56,12 @@ public class Main {
 	/**
 	 * Frames per second cap. Only works if VSYNC is off.
 	 */
-	private static final int FPS_CAP = 500;
+	private static final int FPS_CAP = 120;
 
 	/**
 	 * Debug mode indicator.
 	 */
-	public static final boolean DEBUG = true;
+	public static final boolean DEBUG = false;
 
 	/**
 	 * Frames per second meter. Contains the current FPS.
@@ -192,6 +192,8 @@ public class Main {
 
 		if (DEBUG) {
 			enterScreen(GameScreen.ID); // skip the introduction screen
+		} else {
+			enterScreen(GameScreen.ID); // skip the introduction screen
 		}
 
 		while (!Display.isCloseRequested()) {
@@ -222,8 +224,8 @@ public class Main {
 
 			// debug section
 			if (DEBUG) {
-				Debugg.printFPS(fps);
-				Debugg.printVersionNumber();
+				Debug.printFPS(fps);
+				Debug.printVersionNumber();
 			}
 
 			// give other threads a space

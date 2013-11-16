@@ -12,6 +12,8 @@ import org.newdawn.slick.util.ResourceLoader;
 
 public class Resource {
 
+	public static SpriteSheet playerSprites = getSpriteSheet("res/image/player.png", 32, 32);
+	
 	public static Image getImage(String path) {
 		Image image = null;
 		try {

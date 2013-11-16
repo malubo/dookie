@@ -1,5 +1,6 @@
 package screen;
 
+import util.Debug;
 import level.Level;
 import core.*;
 
@@ -13,7 +14,7 @@ public class GameScreen implements Screen {
 	/**
 	 * Reference to the main class. Used for managing screens, input, timing.
 	 */
-	Main main;
+	private Main main;
 	
 	public static final int MIN_LEVEL_NUMBER = 0;
 	public static final int MAX_LEVEL_NUMBER = 99;
@@ -26,7 +27,7 @@ public class GameScreen implements Screen {
 	/**
 	 * Level.
 	 */
-	Level level;
+	private Level level;
 	
 	
 	/**
@@ -59,6 +60,10 @@ public class GameScreen implements Screen {
 	@Override
 	public void render() {
 		level.render();
+		if(Main.DEBUG) {
+			Debug.printActiveScreenName("game");
+			Debug.printVersionNumber();
+		}
 	}
 
 	@Override

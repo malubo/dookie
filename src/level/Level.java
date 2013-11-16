@@ -12,19 +12,19 @@ import org.newdawn.slick.tiled.TiledMap;
 import core.Camera;
 import core.Main;
 import entity.Player;
-import util.Debugg;
+import util.Debug;
 import util.Resource;
 
 public class Level {
 
-	private static final int BLOCKED_LAYER_INDEX = 0; // blocked immovable tiles
-	private static final int MOVABLE_LAYER_INDEX = 1; // movable tiles
-	private static final int SLIDING_LAYER_INDEX = 2; // sliding immovable floor
-														// tiles
-	private static final int ITEM_LAYER_INDEX = 3; // game items, keys, doors,
-													// traps
-	private static final int ENTITY_LAYER_INDEX = 4; // where the player and
-														// npc's are at
+	static final int BLOCKED_LAYER_INDEX = 0; // blocked immovable tiles
+	static final int MOVABLE_LAYER_INDEX = 1; // movable tiles
+	static final int SLIDING_LAYER_INDEX = 2; // sliding immovable floor
+												// tiles
+	static final int ITEM_LAYER_INDEX = 3; // game items, keys, doors,
+											// traps
+	static final int ENTITY_LAYER_INDEX = 4; // where the player and
+												// npc's are at
 
 	public TiledMap map; // tiled map used to load up the layer lists of tiles
 
@@ -78,7 +78,7 @@ public class Level {
 				Image tileImage = map.getTileImage(x, y, BLOCKED_LAYER_INDEX);
 				if (tileImage != null) {
 					blocked.add(new Tile(x * tileWidth, y * tileHeight,
-							tileWidth, tileHeight, tileImage));
+							tileWidth, tileHeight, tileImage, this));
 				}
 			}
 		}
@@ -89,7 +89,7 @@ public class Level {
 				Image tileImage = map.getTileImage(x, y, MOVABLE_LAYER_INDEX);
 				if (tileImage != null) {
 					movable.add(new Tile(x * tileWidth, y * tileHeight,
-							tileWidth, tileHeight, tileImage));
+							tileWidth, tileHeight, tileImage, this));
 				}
 			}
 		}
@@ -100,14 +100,25 @@ public class Level {
 				Image tileImage = map.getTileImage(x, y, SLIDING_LAYER_INDEX);
 				if (tileImage != null) {
 					sliding.add(new Tile(x * tileWidth, y * tileHeight,
-							tileWidth, tileHeight, tileImage));
+							tileWidth, tileHeight, tileImage, this));
+				}
+			}
+		}
+
+		// fill items array
+		for (int x = 0; x < numTilesX; x++) {
+			for (int y = 0; y < numTilesY; y++) {
+				Image tileImage = map.getTileImage(x, y, ITEM_LAYER_INDEX);
+				if (tileImage != null) {
+					items.add(new Tile(x * tileWidth, y * tileHeight,
+							tileWidth, tileHeight, tileImage, this));
 				}
 			}
 		}
 
 		// identify the player position
 		player = new Player(32, 32, 32, 32, this.keys, this,
-				Player.PLAYER_TYPE_PRINCESS);
+				Player.PLAYER_TYPE_GENIE);
 
 	}
 
@@ -139,9 +150,9 @@ public class Level {
 
 		return false;
 	}
-	
+
 	public boolean isBlocked(Point p) {
-		return isBlocked((int)p.getX(), (int)p.getY());
+		return isBlocked((int) p.getX(), (int) p.getY());
 	}
 
 	/**
@@ -161,9 +172,9 @@ public class Level {
 		}
 		return false;
 	}
-	
+
 	public boolean isMovable(Point p) {
-		return isMovable((int)p.getX(), (int)p.getY()); 
+		return isMovable((int) p.getX(), (int) p.getY());
 	}
 
 	public void setDisplayedArea(Rectangle area) {
@@ -172,6 +183,33 @@ public class Level {
 
 	public Rectangle getDisplayedArea() {
 		return area;
+	}
+
+	public Tile getBlocked(Point p) {
+		for (Tile t : blocked) {
+			if ((int) t.getX() == p.getX() && (int) t.getY() == p.getY()) {
+				return t;
+			}
+		}
+		return null;
+	}
+
+	public Tile getMovable(Point p) {
+		for (Tile t : movable) {
+			if ((int) t.getX() == p.getX() && (int) t.getY() == p.getY()) {
+				return t;
+			}
+		}
+		return null;
+	}
+
+	public Tile getSliding(Point p) {
+		for (Tile t : sliding) {
+			if ((int) t.getX() == p.getX() && (int) t.getY() == p.getY()) {
+				return t;
+			}
+		}
+		return null;
 	}
 
 	public void update(int delta) {
@@ -186,36 +224,33 @@ public class Level {
 			float py = player.getY();
 			float pw = player.getWidth();
 			float ph = player.getHeight();
-			Point pd = player.getDestination();
 
 			if (t.isCollingWidth(player.getBounds())) {
 
 				float tx = t.getX();
 				float ty = t.getY();
-				float tw = t.getWidth();
-				float th = t.getHeight();
 
 				// horizontal pushing
-				if(py == ty){
-					if(tx > px) {
+				if (py == ty) {
+					if (tx > px) {
 						// pushing from left
-						t.moveTo(px + Player.WIDTH, ty);
+						t.moveTo(px + pw, ty);
 					}
-					if(tx < px) {
+					if (tx < px) {
 						// pushing from right
-						t.moveTo(px - Player.WIDTH, ty);
+						t.moveTo(px - pw, ty);
 					}
 				}
-				
+
 				// vertical pushing
-				if(px == tx) {
-					if(ty > py) {
+				if (px == tx) {
+					if (ty > py) {
 						// pushing from top
-						t.moveTo(tx, py + Player.HEIGHT);
+						t.moveTo(tx, py + ph);
 					}
-					if(ty < py) {
+					if (ty < py) {
 						// pushing from bottom
-						t.moveTo(tx, py - Player.HEIGHT);
+						t.moveTo(tx, py - ph);
 					}
 				}
 			}
@@ -224,6 +259,14 @@ public class Level {
 		/**
 		 * Update tile animations.
 		 */
+	}
+
+	private void moveEntities() {
+
+		// move the player
+
+		// move the movables
+
 	}
 
 	public void render() {
@@ -242,11 +285,10 @@ public class Level {
 
 		if (Main.DEBUG) {
 			camera.translate();
-			Debugg.printTileGrid(this);
+			Debug.printTileGrid(this);
 			camera.untranslate();
 
-			Debugg.printTilesDisplayed(tilesDisplaying);
-			Debugg.printActiveScreenName("game");
+			Debug.printTilesDisplayed(tilesDisplaying);
 		}
 
 	}
@@ -256,7 +298,7 @@ public class Level {
 		// Reset the tiles on screen counter.
 		tilesDisplaying = 0;
 
-		// Render the blocked layer.
+		// Render the blocked array.
 		for (Tile t : blocked) {
 			if (t.isCollingWidth(getDisplayedArea())) {
 				t.render();
@@ -264,16 +306,24 @@ public class Level {
 			}
 		}
 
-		// Render the movable layer.
-		for (Tile t : movable) {
+		// Render the sliding array.
+		for (Tile t : sliding) {
 			if (t.isCollingWidth(getDisplayedArea())) {
 				t.render();
 				tilesDisplaying++;
 			}
 		}
 
-		// Render the sliding layer.
-		for (Tile t : sliding) {
+		// Render the items array.
+		for (Tile t : items) {
+			if (t.isCollingWidth(getDisplayedArea())) {
+				t.render();
+				tilesDisplaying++;
+			}
+		}
+
+		// Render the movable array.
+		for (Tile t : movable) {
 			if (t.isCollingWidth(getDisplayedArea())) {
 				t.render();
 				tilesDisplaying++;
