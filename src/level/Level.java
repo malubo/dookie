@@ -11,6 +11,7 @@ import org.newdawn.slick.tiled.TiledMap;
 
 import core.Camera;
 import core.Main;
+import entity.Entity.Type;
 import entity.Player;
 import util.Debug;
 import util.Resource;
@@ -77,8 +78,10 @@ public class Level {
 			for (int y = 0; y < numTilesY; y++) {
 				Image tileImage = map.getTileImage(x, y, BLOCKED_LAYER_INDEX);
 				if (tileImage != null) {
-					blocked.add(new Tile(x * tileWidth, y * tileHeight,
-							tileWidth, tileHeight, tileImage, this));
+					Tile t = new Tile(x * tileWidth, y * tileHeight, tileWidth,
+							tileHeight, tileImage, this);
+					t.setType(Type.blocked);
+					blocked.add(t);
 				}
 			}
 		}
@@ -88,8 +91,10 @@ public class Level {
 			for (int y = 0; y < numTilesY; y++) {
 				Image tileImage = map.getTileImage(x, y, MOVABLE_LAYER_INDEX);
 				if (tileImage != null) {
-					movable.add(new Tile(x * tileWidth, y * tileHeight,
-							tileWidth, tileHeight, tileImage, this));
+					Tile t = new Tile(x * tileWidth, y * tileHeight, tileWidth,
+							tileHeight, tileImage, this);
+					t.setType(Type.movable);
+					movable.add(t);
 				}
 			}
 		}
@@ -99,8 +104,10 @@ public class Level {
 			for (int y = 0; y < numTilesY; y++) {
 				Image tileImage = map.getTileImage(x, y, SLIDING_LAYER_INDEX);
 				if (tileImage != null) {
-					sliding.add(new Tile(x * tileWidth, y * tileHeight,
-							tileWidth, tileHeight, tileImage, this));
+					Tile t = new Tile(x * tileWidth, y * tileHeight, tileWidth,
+							tileHeight, tileImage, this);
+					t.setType(Type.sliding);
+					sliding.add(t);
 				}
 			}
 		}
@@ -110,15 +117,18 @@ public class Level {
 			for (int y = 0; y < numTilesY; y++) {
 				Image tileImage = map.getTileImage(x, y, ITEM_LAYER_INDEX);
 				if (tileImage != null) {
-					items.add(new Tile(x * tileWidth, y * tileHeight,
-							tileWidth, tileHeight, tileImage, this));
+					Tile t = new Tile(x * tileWidth, y * tileHeight,
+							tileWidth, tileHeight, tileImage, this);
+					t.setType(Type.item);
+					items.add(t);
 				}
 			}
 		}
 
 		// identify the player position
-		player = new Player(32, 32, 32, 32, this.keys, this,
-				Player.PLAYER_TYPE_GENIE);
+		player = new Player(160, 192, 32, 32, this.keys, this,
+				Player.PLAYER_TYPE_VIKING);
+		player.setType(Type.player); 
 
 	}
 
@@ -151,32 +161,6 @@ public class Level {
 		return false;
 	}
 
-	public boolean isBlocked(Point p) {
-		return isBlocked((int) p.getX(), (int) p.getY());
-	}
-
-	/**
-	 * Checks if the target grid point is occupied by a movable tile.
-	 * 
-	 * @param x
-	 *            X coordinate of the point.
-	 * @param y
-	 *            Y coordinate of the point.
-	 * @return True if the point is occupied by a movable. False otherwise.
-	 */
-	public boolean isMovable(int x, int y) {
-		for (Tile t : movable) {
-			if ((int) t.getX() == x && (int) t.getY() == y) {
-				return true;
-			}
-		}
-		return false;
-	}
-
-	public boolean isMovable(Point p) {
-		return isMovable((int) p.getX(), (int) p.getY());
-	}
-
 	public void setDisplayedArea(Rectangle area) {
 		this.area = area;
 	}
@@ -199,6 +183,15 @@ public class Level {
 			if ((int) t.getX() == p.getX() && (int) t.getY() == p.getY()) {
 				return t;
 			}
+
+			// Returns the destination of the movable.
+			// Prevents collisions and movement errors.
+			if (t.getDestination() != null) {
+				if ((int) t.getDestination().getX() == p.getX()
+						&& (int) t.getDestination().getY() == p.getY()) {
+					return t;
+				}
+			}
 		}
 		return null;
 	}
@@ -215,57 +208,9 @@ public class Level {
 	public void update(int delta) {
 		player.update(delta);
 
-		/**
-		 * Update tile movements.
-		 */
 		for (Tile t : movable) {
-
-			float px = player.getX();
-			float py = player.getY();
-			float pw = player.getWidth();
-			float ph = player.getHeight();
-
-			if (t.isCollingWidth(player.getBounds())) {
-
-				float tx = t.getX();
-				float ty = t.getY();
-
-				// horizontal pushing
-				if (py == ty) {
-					if (tx > px) {
-						// pushing from left
-						t.moveTo(px + pw, ty);
-					}
-					if (tx < px) {
-						// pushing from right
-						t.moveTo(px - pw, ty);
-					}
-				}
-
-				// vertical pushing
-				if (px == tx) {
-					if (ty > py) {
-						// pushing from top
-						t.moveTo(tx, py + ph);
-					}
-					if (ty < py) {
-						// pushing from bottom
-						t.moveTo(tx, py - ph);
-					}
-				}
-			}
+			t.update(delta);
 		}
-
-		/**
-		 * Update tile animations.
-		 */
-	}
-
-	private void moveEntities() {
-
-		// move the player
-
-		// move the movables
 
 	}
 
@@ -300,7 +245,7 @@ public class Level {
 
 		// Render the blocked array.
 		for (Tile t : blocked) {
-			if (t.isCollingWidth(getDisplayedArea())) {
+			if (t.isCollidingWidth(getDisplayedArea())) {
 				t.render();
 				tilesDisplaying++;
 			}
@@ -308,7 +253,7 @@ public class Level {
 
 		// Render the sliding array.
 		for (Tile t : sliding) {
-			if (t.isCollingWidth(getDisplayedArea())) {
+			if (t.isCollidingWidth(getDisplayedArea())) {
 				t.render();
 				tilesDisplaying++;
 			}
@@ -316,7 +261,7 @@ public class Level {
 
 		// Render the items array.
 		for (Tile t : items) {
-			if (t.isCollingWidth(getDisplayedArea())) {
+			if (t.isCollidingWidth(getDisplayedArea())) {
 				t.render();
 				tilesDisplaying++;
 			}
@@ -324,7 +269,7 @@ public class Level {
 
 		// Render the movable array.
 		for (Tile t : movable) {
-			if (t.isCollingWidth(getDisplayedArea())) {
+			if (t.isCollidingWidth(getDisplayedArea())) {
 				t.render();
 				tilesDisplaying++;
 			}

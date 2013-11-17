@@ -5,17 +5,17 @@
  </tileset>
  <layer name="blocked" width="20" height="20">
   <data encoding="base64" compression="gzip">
-   H4sIAAAAAAAAC2NiYGAQoxJmgtLUAjBzsQFGKpvHRGXz+IFYAI88qeaRA0bNo495glQ2j1hAqXlcVDZPgMrmoYNR8yg3D1ZGU6u8BwDtv9QNQAYAAA==
+   H4sIAAAAAAAAC2NiYGAQoxJmgtLUAjBzsQFGKpvHRGXz+IFYAI88qeaRAwbCPEEqm4cPcFLBPA48csSaR6yfB1v8clHZPAEqm4cORs2j3DxYGU2t8h4AWSISKkAGAAA=
   </data>
  </layer>
  <layer name="movable" width="20" height="20">
   <data encoding="base64" compression="gzip">
-   H4sIAAAAAAAAC2NgGAW0BhJ0skecTvYMFnsJAZWBdsAoGHAgR6Y+bSCWpaZDhikAACM5pzFABgAA
+   H4sIAAAAAAAAC2NgGDpAfKAdQCaQoJM9lIaP9gDZSyugMtAOAAK1gXbACAdyZOoD5QVZajqESDAY0iwpAAA8m1YRQAYAAA==
   </data>
  </layer>
  <layer name="sliding" width="20" height="20">
   <data encoding="base64" compression="gzip">
-   H4sIAAAAAAAAC2NgGAWjgDaABQ0PF/Nw6aO2+wYDwOcPcvxI7XAZLuE8VAEAVRJQ7UAGAAA=
+   H4sIAAAAAAAAC2NgGAWjgDaABQ1TwwxqmIfOJtU8XO6ghvuw2UVNQKp56OopjYeB9s8ooC4AAHpm+YNABgAA
   </data>
  </layer>
  <layer name="item" width="20" height="20" visible="0">

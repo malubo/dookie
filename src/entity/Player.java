@@ -106,10 +106,10 @@ public class Player extends Entity {
 
 		state = State.standing;
 		setDirection(Direction.south);
-		
+
 		loadAnimations();
 		setVisible(true);
-		
+
 		stopMovement();
 		activateCooldown();
 	}
@@ -174,159 +174,28 @@ public class Player extends Entity {
 	@Override
 	public void update(int delta) {
 
-		/*
-		 * Handle input.
-		 */
+		// Handle input.
 		handleInput(delta);
 
-		/*
-		 * If the player is not moving reset the state to standing.
-		 */
 		if (!isMoving()) {
-			setState(State.standing);
+			// If the player is not moving reset the state to standing.
+			setState(State.standing); 
+		} else {
+			move(delta);
 		}
 
-		/*
-		 * Destination point is not set. Player is moving.
-		 */
-		if (isMoving() && getDestination() == null) {
-
-			int targetX = (int) getX();
-			int targetY = (int) getY();
-
-			switch (getDirection()) {
-			case north:
-				targetX = (int) getX();
-				targetY = ((int) getY()) - Player.HEIGHT;
-				break;
-			case east:
-				targetX = ((int) getX()) + Player.WIDTH;
-				targetY = (int) getY();
-				break;
-			case south:
-				targetX = (int) getX();
-				targetY = ((int) getY()) + Player.HEIGHT;
-				break;
-			case west:
-				targetX = ((int) getX()) - Player.WIDTH;
-				targetY = (int) getY();
-				break;
-			}
-			setDestination(new Point(targetX, targetY));
-		}
-
-		if (getDestination() != null) {
-
-			/*
-			 * Destination point is set. Check if the destination point is an
-			 * open space. Cancel movement if the destination is blocked.
-			 */
-			if (level.isBlocked(getDestination())) {
-				stopMovement();
-				setState(State.standing);
-			}
-
-			/*
-			 * Check if the destination is a movable tile, check if it can be
-			 * moved onto next tile. Stop movement if the check fails.
-			 */
-			else if (level.isMovable(getDestination())) {
-				Point p = null;
-				switch (getDirection()) {
-				case north:
-					p = new Point((int) getDestination().getX(),
-							(int) getDestination().getY() - Player.HEIGHT);
-					if (level.isBlocked(p) || level.isMovable(p)) {
-						stopMovement();
-						setState(State.standing);
-					}
-					break;
-				case east:
-					p = new Point((int) getDestination().getX() + Player.WIDTH,
-							(int) getDestination().getY());
-					if (level.isBlocked(p) || level.isMovable(p)) {
-						stopMovement();
-						setState(State.standing);
-					}
-					break;
-				case south:
-					p = new Point((int) getDestination().getX(),
-							(int) getDestination().getY() + Player.HEIGHT);
-					if (level.isBlocked(p) || level.isMovable(p)) {
-						stopMovement();
-						setState(State.standing);
-					}
-					break;
-				case west:
-					p = new Point((int) getDestination().getX() - Player.WIDTH,
-							(int) getDestination().getY());
-					if (level.isBlocked(p) || level.isMovable(p)) {
-						stopMovement();
-						setState(State.standing);
-					}
-					break;
-				}
-			}
-		}
-
-		/*
-		 * Player is moving. Destination point is set. Move towards the
-		 * destination point.
-		 */
-		if (isMoving() && getDestination() != null) {
-
-			state = State.walking;
-
-			float newX = getX();
-			float newY = getY();
-
-			switch (getDirection()) {
-			case north:
-				newY -= SPEED * delta;
-				if (newY < getDestination().getY()) {
-					newY = getDestination().getY();
-					stopMovement();
-				}
-				break;
-			case east:
-				newX += SPEED * delta;
-				if (newX > getDestination().getX()) {
-					newX = getDestination().getX();
-					stopMovement();
-				}
-				break;
-			case south:
-				newY += SPEED * delta;
-				if (newY > getDestination().getY()) {
-					newY = getDestination().getY();
-					stopMovement();
-				}
-				break;
-			case west:
-				newX -= SPEED * delta;
-				if (newX < getDestination().getX()) {
-					newX = getDestination().getX();
-					stopMovement();
-				}
-				break;
-			}
-			this.moveTo(newX, newY);
-		}
-
-		/*
-		 * Update animations.
-		 */
+		// Update animations.
 		updateAnimations(delta);
 	}
 
 	private void handleInput(long delta) {
 
 		if (isMoving()) {
-			return; // bugger off if moving is in progress
+			return; // Bugger off if moving is in progress.
 		}
 
 		if (isCooldownReady()) {
-			return; // bugger off if action cooldown hasn't finished
+			return; // Bugger off if action cool down hasn't finished.
 		}
 
 		// UP PRESSED
@@ -334,11 +203,12 @@ public class Player extends Entity {
 			if (getDirection() == Direction.north) {
 				if (state == State.standing || state == State.walking) {
 					setState(State.walking);
-					setMoving(true); 
+					startMovement(getDirection());
 					activateCooldown();
 				}
 			}
 
+			// Changing direction cool down.
 			if (getDirection() != Direction.north && state == State.standing) {
 				setDirection(Direction.north);
 				// activateCooldown();
@@ -350,11 +220,12 @@ public class Player extends Entity {
 			if (getDirection() == Direction.east) {
 				if (state == State.standing || state == State.walking) {
 					setState(State.walking);
-					setMoving(true);
+					startMovement(getDirection());
 					activateCooldown();
 				}
 			}
-
+			
+			// Changing direction cool down.
 			if (getDirection() != Direction.east && state == State.standing) {
 				setDirection(Direction.east);
 				// activateCooldown();
@@ -366,11 +237,12 @@ public class Player extends Entity {
 			if (getDirection() == Direction.south) {
 				if (state == State.standing || state == State.walking) {
 					setState(State.walking);
-					setMoving(true);
+					startMovement(getDirection());
 					activateCooldown();
 				}
 			}
-
+			
+			// Changing direction cool down.
 			if (getDirection() != Direction.south && state == State.standing) {
 				setDirection(Direction.south);
 				// activateCooldown();
@@ -382,11 +254,12 @@ public class Player extends Entity {
 			if (getDirection() == Direction.west) {
 				if (state == State.standing || state == State.walking) {
 					setState(State.walking);
-					setMoving(true);
+					startMovement(getDirection());
 					activateCooldown();
 				}
 			}
 
+			// Changing direction cool down.
 			if (getDirection() != Direction.west && state == State.standing) {
 				setDirection(Direction.west);
 				// activateCooldown();
@@ -439,7 +312,7 @@ public class Player extends Entity {
 		case east:
 			if (state == State.standing) {
 				animations.get(ANIMATION_STANDING_EAST).getCurrentFrame()
-				.draw(getX(), getY());
+						.draw(getX(), getY());
 			} else if (state == State.walking) {
 				animations.get(ANIMATION_WALKING_EAST).getCurrentFrame()
 						.draw(getX(), getY());
@@ -448,7 +321,7 @@ public class Player extends Entity {
 		case south:
 			if (state == State.standing) {
 				animations.get(ANIMATION_STANDING_SOUTH).getCurrentFrame()
-				.draw(getX(), getY());
+						.draw(getX(), getY());
 			} else if (state == State.walking) {
 				animations.get(ANIMATION_WALKING_SOUTH).getCurrentFrame()
 						.draw(getX(), getY());
@@ -457,7 +330,7 @@ public class Player extends Entity {
 		case west:
 			if (state == State.standing) {
 				animations.get(ANIMATION_STANDING_WEST).getCurrentFrame()
-				.draw(getX(), getY());
+						.draw(getX(), getY());
 			} else if (state == State.walking) {
 				animations.get(ANIMATION_WALKING_WEST).getCurrentFrame()
 						.draw(getX(), getY());
@@ -499,5 +372,4 @@ public class Player extends Entity {
 				getY() + -10);
 
 	}
-
 }

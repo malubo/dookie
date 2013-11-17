@@ -16,6 +16,11 @@ import org.newdawn.slick.geom.Shape;
 public abstract class Entity {
 
 	/**
+	 * Speed constant.
+	 */
+	public static final float SPEED = 0.105f;
+
+	/**
 	 * X-axis coordinate in pixels.
 	 */
 	private float x;
@@ -130,7 +135,7 @@ public abstract class Entity {
 		// If the destination is different from current position start the
 		// movement.
 		if (getDestination().getX() != getX()
-				&& getDestination().getY() != getY()) {
+				| getDestination().getY() != getY()) {
 			setMoving(true);
 		} else {
 			stopMovement();
@@ -149,8 +154,9 @@ public abstract class Entity {
 	 */
 	private Point getNewDestinationPoint(int x, int y) {
 
-		Point newDestinationPoint = null;
-		Point behindNewDestinationPoint = null;
+		Point currentPosition;
+		Point newDestination;
+		Point behindNewDestination;
 
 		// New destination X, Y coordinates.
 		int destinationX = x;
@@ -180,35 +186,58 @@ public abstract class Entity {
 			break;
 		}
 
-		newDestinationPoint = new Point(destinationX, destinationY);
+		currentPosition = new Point(x, y);
+		
+		newDestination = new Point(destinationX, destinationY);
 
-		behindNewDestinationPoint = new Point(behindDestinationX,
+		behindNewDestination = new Point(behindDestinationX,
 				behindDestinationY);
 
 		// Destination point is blocked.
-		if (level.isBlocked(newDestinationPoint)) {
-			return new Point(x, y);
+		if (level.getBlocked(newDestination) != null) {
+			return currentPosition;
+		}
+
+		// Standing on a sliding tile.
+		if (level.getSliding(currentPosition) != null) {
+
+			// Can't push a movable from sliding tile.
+			if (level.getMovable(newDestination) != null) {
+				return currentPosition;
+			}
 		}
 
 		// Destination point is movable.
-		else if (level.isMovable(newDestinationPoint)) {
+		if (level.getMovable(newDestination) != null) {
 
 			// One space behind destination is blocked.
-			if (level.isBlocked(behindNewDestinationPoint)) {
+			if (level.getBlocked(behindNewDestination) != null) {
 				return new Point(x, y);
 			}
 
 			// One space behind destination is movable.
-			if (level.isMovable(behindNewDestinationPoint)) {
+			if (level.getMovable(behindNewDestination)  != null) {
 				return new Point(x, y);
 			}
 
 			// Get the movable to move.
-			Tile movable = level.getMovable(newDestinationPoint);
-			movable.startMovement(getDirection());
+			Tile movable = level.getMovable(newDestination);
+			if (movable != null) {
+				movable.startMovement(getDirection());
+			}
+			
 		}
 
-		return newDestinationPoint;
+		// Destination is sliding.
+		else if (level.getSliding(newDestination) != null) {
+
+			if (level.getMovable(behindNewDestination) == null) {
+				return getNewDestinationPoint(destinationX, destinationY);
+			}
+			
+		}
+
+		return newDestination;
 	}
 
 	/**
@@ -418,7 +447,45 @@ public abstract class Entity {
 	 * @param delta
 	 */
 	public void move(int delta) {
-		// TBD
+
+		// New X, Y coordinates.
+		float newX = getX();
+		float newY = getY();
+
+		/*
+		 * Move the entity in proper direction.
+		 */
+		switch (getDirection()) {
+		case north:
+			newY -= SPEED * delta;
+			if (newY < getDestination().getY()) {
+				newY = getDestination().getY();
+				stopMovement();
+			}
+			break;
+		case east:
+			newX += SPEED * delta;
+			if (newX > getDestination().getX()) {
+				newX = getDestination().getX();
+				stopMovement();
+			}
+			break;
+		case south:
+			newY += SPEED * delta;
+			if (newY > getDestination().getY()) {
+				newY = getDestination().getY();
+				stopMovement();
+			}
+			break;
+		case west:
+			newX -= SPEED * delta;
+			if (newX < getDestination().getX()) {
+				newX = getDestination().getX();
+				stopMovement();
+			}
+			break;
+		}
+		this.moveTo(newX, newY);
 	}
 
 	/**
@@ -454,7 +521,7 @@ public abstract class Entity {
 	 * @param shape
 	 * @return True if the shape collides with the entity.
 	 */
-	public boolean isCollingWidth(Shape shape) {
+	public boolean isCollidingWidth(Shape shape) {
 		return getBounds().intersects(shape) || getBounds().contains(shape);
 	}
 
