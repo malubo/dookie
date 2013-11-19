@@ -10,7 +10,7 @@ import org.newdawn.slick.geom.Shape;
 /**
  * Abstract class designed to be the ancestor for all rectangular game objects.
  * 
- * @author Luboš Malý
+ * @author Luboï¿½ Malï¿½
  * 
  */
 public abstract class Entity {
@@ -84,6 +84,12 @@ public abstract class Entity {
 	 */
 	private Point destination;
 
+	/**
+	 * Constructor.
+	 */
+	public Entity() {
+	}
+	
 	/**
 	 * Constructor.
 	 * 
@@ -203,7 +209,7 @@ public abstract class Entity {
 
 			// Can't push a movable from sliding tile.
 			if (level.getMovable(newDestination) != null) {
-				return currentPosition;
+				//return currentPosition;
 			}
 		}
 

@@ -6,11 +6,10 @@ import level.Level;
 
 import org.newdawn.slick.Animation;
 import org.newdawn.slick.SpriteSheet;
-import org.newdawn.slick.geom.Point;
-
 import core.Main;
 import ui.Font;
 import util.Resource;
+import util.Settings;
 import input.Keys;
 
 public class Player extends Entity {
@@ -51,17 +50,6 @@ public class Player extends Entity {
 	static final int ANIMATION_SLIDING_SOUTH = 302;
 	static final int ANIMATION_SLIDING_WEST = 303;
 
-	public int playerType;
-
-	public static final int PLAYER_TYPE_GHOST = 0;
-	public static final int PLAYER_TYPE_SKELETON = 1;
-	public static final int PLAYER_TYPE_GOBLIN = 2;
-	public static final int PLAYER_TYPE_IMP = 3;
-	public static final int PLAYER_TYPE_GENIE = 4;
-	public static final int PLAYER_TYPE_PRINCESS = 5;
-	public static final int PLAYER_TYPE_REAPER = 6;
-	public static final int PLAYER_TYPE_VIKING = 7;
-
 	/**
 	 * Walking speed.
 	 */
@@ -98,12 +86,11 @@ public class Player extends Entity {
 	 * @param keys
 	 */
 	public Player(float x, float y, float width, float height, Keys keys,
-			Level level, int playerType) {
+			Level level) {
 		super(x, y, width, height, level);
 		this.keys = keys;
 		this.level = level;
-		this.playerType = playerType;
-
+		
 		state = State.standing;
 		setDirection(Direction.south);
 
@@ -120,46 +107,46 @@ public class Player extends Entity {
 
 		// STANDING NORTH
 		Animation standingNorth = new Animation();
-		standingNorth.addFrame(player.getSprite(7, playerType), 100);
+		standingNorth.addFrame(player.getSprite(7, Settings.playerType), 100);
 		animations.put(ANIMATION_STANDING_NORTH, standingNorth);
 
 		// STANDING EAST
 		Animation standingEast = new Animation();
-		standingEast.addFrame(player.getSprite(4, playerType), 100);
+		standingEast.addFrame(player.getSprite(4, Settings.playerType), 100);
 		animations.put(ANIMATION_STANDING_EAST, standingEast);
 
 		// STANDING SOUTH
 		Animation standingSouth = new Animation();
-		standingSouth.addFrame(player.getSprite(1, playerType), 100);
+		standingSouth.addFrame(player.getSprite(1, Settings.playerType), 100);
 		animations.put(ANIMATION_STANDING_SOUTH, standingSouth);
 
 		// STANDING WEST
 		Animation standingWest = new Animation();
-		standingWest.addFrame(player.getSprite(10, playerType), 100);
+		standingWest.addFrame(player.getSprite(10, Settings.playerType), 100);
 		animations.put(ANIMATION_STANDING_WEST, standingWest);
 
 		// WALKING NORTH
 		Animation walkingNorth = new Animation();
-		walkingNorth.addFrame(player.getSprite(6, playerType), 100);
-		walkingNorth.addFrame(player.getSprite(8, playerType), 100);
+		walkingNorth.addFrame(player.getSprite(6, Settings.playerType), 100);
+		walkingNorth.addFrame(player.getSprite(8, Settings.playerType), 100);
 		animations.put(ANIMATION_WALKING_NORTH, walkingNorth);
 
 		// WALKING EAST
 		Animation walkingEast = new Animation();
-		walkingEast.addFrame(player.getSprite(3, playerType), 100);
-		walkingEast.addFrame(player.getSprite(5, playerType), 100);
+		walkingEast.addFrame(player.getSprite(3, Settings.playerType), 100);
+		walkingEast.addFrame(player.getSprite(5, Settings.playerType), 100);
 		animations.put(ANIMATION_WALKING_EAST, walkingEast);
 
 		// WALKING SOUTH
 		Animation walkingSouth = new Animation();
-		walkingSouth.addFrame(player.getSprite(0, playerType), 100);
-		walkingSouth.addFrame(player.getSprite(2, playerType), 100);
+		walkingSouth.addFrame(player.getSprite(0, Settings.playerType), 100);
+		walkingSouth.addFrame(player.getSprite(2, Settings.playerType), 100);
 		animations.put(ANIMATION_WALKING_SOUTH, walkingSouth);
 
 		// WALKING WEST
 		Animation walkingWest = new Animation();
-		walkingWest.addFrame(player.getSprite(9, playerType), 100);
-		walkingWest.addFrame(player.getSprite(11, playerType), 100);
+		walkingWest.addFrame(player.getSprite(9, Settings.playerType), 100);
+		walkingWest.addFrame(player.getSprite(11, Settings.playerType), 100);
 		animations.put(ANIMATION_WALKING_WEST, walkingWest);
 	}
 

@@ -9,7 +9,8 @@ import core.Main;
 public class Debug {
 
 	public static void printFPS(int fps) {
-		ui.Font.renderText(Integer.toString(fps) + "fps", 1, 1);
+		//ui.Font.renderText(Integer.toString(fps) + "fps", 1, 1);
+		ui.Font.renderText(Integer.toString(fps), 1, 1);
 	}
 
 	public static void printTilesDisplayed(int tiles) {

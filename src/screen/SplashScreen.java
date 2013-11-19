@@ -62,6 +62,12 @@ public class SplashScreen implements Screen {
 
 	@Override
 	public void update(int delta) {
+		
+		if(main.getKeys().confirm.wasDown()) {
+			main.enterScreen(MainMenuScreen.ID);
+			return;
+		}
+		
 		if (fadeAlpha >= MAX_ALPHA) {
 			fadeSpeed = -fadeSpeed;
 		}

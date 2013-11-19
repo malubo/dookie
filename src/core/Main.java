@@ -13,7 +13,7 @@ import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
 import org.lwjgl.opengl.GL11;
 
-import screen.CharacterSelectionScreen;
+import screen.CharSelectionScreen;
 import screen.GameScreen;
 import screen.MainMenuScreen;
 import screen.OptionsScreen;
@@ -31,17 +31,17 @@ public class Main {
 	/**
 	 * Version.
 	 */
-	public static final String VERSION = "0.0.4";
+	public static final String VERSION = "0.0.4.1";
 
 	/**
 	 * Width of the game canvas.
 	 */
-	public static final int WIDTH = 512;
+	public static final int WIDTH = 512/5*4;
 
 	/**
 	 * Height of the game canvas.
 	 */
-	public static final int HEIGHT = 384;
+	public static final int HEIGHT = 384/5*4;
 
 	/**
 	 * Full screen mode indicator.
@@ -132,7 +132,7 @@ public class Main {
 				Display.setDisplayMode(new DisplayMode(512*2, 384*2));
 			}
 
-			// Vertical Synchronisation
+			// Vertical Synchronization
 			Display.setVSyncEnabled(VSYNC);
 
 			Display.create();
@@ -179,23 +179,22 @@ public class Main {
 		screens.add(new MainMenuScreen(this));
 		screens.add(new GameScreen(this));
 		screens.add(new OptionsScreen(this));
-		screens.add(new CharacterSelectionScreen(this));
+		screens.add(new CharSelectionScreen(this));
 	}
 
 	/**
 	 * Game cycle. Update + Render the current screen.
 	 */
 	public void loop() {
-
-		// set introduction screen as active screen
-		enterScreen(SplashScreen.ID);
-
+		
 		if (DEBUG) {
-			enterScreen(GameScreen.ID); // skip the introduction screen
+			// skip the introduction screen
+			enterScreen(GameScreen.ID); 
 		} else {
-			enterScreen(GameScreen.ID); // skip the introduction screen
+			// set introduction screen as active screen
+			enterScreen(SplashScreen.ID);
 		}
-
+		
 		while (!Display.isCloseRequested()) {
 
 			// calculate delta
@@ -222,6 +221,8 @@ public class Main {
 			// render
 			activeScreen.render();
 
+			Debug.printFPS(fps);
+			
 			// debug section
 			if (DEBUG) {
 				Debug.printFPS(fps);

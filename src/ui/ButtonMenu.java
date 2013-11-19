@@ -4,7 +4,7 @@ import core.Main;
 
 import java.util.ArrayList;
 
-public class CenteredButtonMenu {
+public class ButtonMenu {
 
 	private float x;
 	private float y;
@@ -16,11 +16,12 @@ public class CenteredButtonMenu {
 	public long delay = 220; // delay in ms between menu selection
 
 	private int selectedMenuItemIndex;
+	
 	private String[] menuItems;
 
 	private ArrayList<Button> menuButtons = new ArrayList<Button>();
 
-	public CenteredButtonMenu(String... menuItems) {
+	public ButtonMenu(String... menuItems) {
 		this.menuItems = menuItems;
 		lastMenuMove = Main.getTime();
 		selectedMenuItemIndex = 0;

@@ -39,7 +39,6 @@ public class Level {
 	public int numTilesY; // map height in tiles
 
 	private Player player;
-	private Keys keys;
 	private Camera camera;
 
 	private ArrayList<Tile> blocked = new ArrayList<Tile>();
@@ -60,8 +59,7 @@ public class Level {
 	public Level(String name, Keys keys) {
 
 		map = Resource.getTiledMap("res/world/" + name + ".tmx");
-		this.keys = keys;
-
+		
 		tileWidth = map.getTileWidth();
 		tileHeight = map.getTileHeight();
 
@@ -117,8 +115,8 @@ public class Level {
 			for (int y = 0; y < numTilesY; y++) {
 				Image tileImage = map.getTileImage(x, y, ITEM_LAYER_INDEX);
 				if (tileImage != null) {
-					Tile t = new Tile(x * tileWidth, y * tileHeight,
-							tileWidth, tileHeight, tileImage, this);
+					Tile t = new Tile(x * tileWidth, y * tileHeight, tileWidth,
+							tileHeight, tileImage, this);
 					t.setType(Type.item);
 					items.add(t);
 				}
@@ -126,9 +124,8 @@ public class Level {
 		}
 
 		// identify the player position
-		player = new Player(160, 192, 32, 32, this.keys, this,
-				Player.PLAYER_TYPE_VIKING);
-		player.setType(Type.player); 
+		player = new Player(160, 192, Player.WIDTH, Player.HEIGHT, keys, this);
+		player.setType(Type.player);
 
 	}
 
@@ -180,9 +177,6 @@ public class Level {
 
 	public Tile getMovable(Point p) {
 		for (Tile t : movable) {
-			if ((int) t.getX() == p.getX() && (int) t.getY() == p.getY()) {
-				return t;
-			}
 
 			// Returns the destination of the movable.
 			// Prevents collisions and movement errors.
@@ -191,7 +185,10 @@ public class Level {
 						&& (int) t.getDestination().getY() == p.getY()) {
 					return t;
 				}
+			} else if ((int) t.getX() == p.getX() && (int) t.getY() == p.getY()) {
+				return t;
 			}
+
 		}
 		return null;
 	}

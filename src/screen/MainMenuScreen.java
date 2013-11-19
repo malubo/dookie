@@ -1,6 +1,6 @@
 package screen;
 
-import ui.CenteredButtonMenu;
+import ui.ButtonMenu;
 import core.Main;
 
 public class MainMenuScreen implements Screen {
@@ -16,7 +16,7 @@ public class MainMenuScreen implements Screen {
 	 */
 	private Main main;
 
-	private CenteredButtonMenu menu;
+	private ButtonMenu menu;
 
 	/**
 	 * Constructor.
@@ -29,7 +29,7 @@ public class MainMenuScreen implements Screen {
 
 	@Override
 	public void init() {
-		menu = new CenteredButtonMenu("start", "options", "exit");
+		menu = new ButtonMenu("start", "options", "exit");
 	}
 
 	@Override
@@ -53,7 +53,7 @@ public class MainMenuScreen implements Screen {
 		// confirm pressed
 		if (main.getKeys().confirm.isDown()) {
 			if (menu.getSelectedItem().equals("start")) {
-				main.enterScreen(GameScreen.ID);
+				main.enterScreen(CharSelectionScreen.ID);
 			} else if (menu.getSelectedItem().equals("options")) {
 				main.enterScreen(OptionsScreen.ID);
 			} else if (menu.getSelectedItem().equals("exit")) {

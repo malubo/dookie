@@ -12,10 +12,12 @@ public class Font {
 	public static final int WIDTH = 8;
 	public static final int HEIGHT = 8;
 
+	public static float scale = 1.0f;
+	
 	private static SpriteSheet font = getFont();
 
 	public static float getMessageWidth(String msg) {
-		return msg.length() * WIDTH;
+		return msg.length() * (WIDTH * scale);
 	}
 
 	public static void renderText(String msg, float x, float y) {
@@ -27,7 +29,7 @@ public class Font {
 			int xCoord = letters.indexOf(c) - yCoord * 30;
 			Image letter = font.getSprite(xCoord, yCoord);
 			letter.clampTexture();
-			letter.draw(x + offset, y);
+			letter.draw(x + offset * scale, y, WIDTH * scale, HEIGHT * scale);
 			offset += WIDTH;
 		}
 	}
